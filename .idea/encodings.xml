@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/serialprocess/AdjustRandIndex.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/serialprocess/ConsensusClusteringSerial.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/serialprocess/DetermineOverlapNodes.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/serialprocess/Edges.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/serialprocess/ExtractCommunities.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/serialprocess/Graph.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/serialprocess/GraphSearch.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/serialprocess/ResultOutput.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/serialprocess/SpeakEasy.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/serialprocess/VertexNode.java" charset="GBK" />
+  </component>
+</project>
