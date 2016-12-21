@@ -53,13 +53,11 @@ public class Graph{
 		
 	}
 	//带参构造器，初始化图的节点数，从而知道邻接矩阵的阶数
-	Graph(int numNode,int numEdges,int bSize,String filePath)
+	Graph(int bSize,String filePath)
 	{
-		this.vertexNum=numNode;
-		this.edgeNum=numEdges;
 		this.bufferSize=bSize;
-//		readData(filePath,totalEdgesList,map);//读文本初始化边集（就是图的邻接矩阵）
-		readDataForRepeatEdges(filePath,totalEdgesList,map);//原数据集中的边有重复的，即一条边表示了两次
+		readData(filePath,totalEdgesList,map);//读文本初始化边集（就是图的邻接矩阵）
+//		readDataForRepeatEdges(filePath,totalEdgesList,map);//原数据集中的边有重复的，即一条边表示了两次
 	}
 	
 	
@@ -67,7 +65,7 @@ public class Graph{
 	 * 读取文本中的边集数据，在Graph含参数构造器中被调用一次。
 	 * @param filepath
 	 * @param edgelist，代表图的边集合， 调用的时候接受的是list的引用，对edgelist所指对象的改变等同于改变原引用所指的空间
-	 * @param nodeList
+	 * @param map
 	 */
 	public void readData(String filepath,List<Edges>edgelist,Map<String, VertexNode> map)
 	{
@@ -82,8 +80,7 @@ public class Graph{
 				System.out.println("开始读取文件 ：");
 				while((readrow=bf.readLine()) != null){
 					
-//					String []str=readrow.split("\t");
-					String []str=readrow.split(" ");
+					String []str=readrow.split("\t");
 					VertexNode from=new VertexNode(str[0]);
 					VertexNode to=new VertexNode(str[1]);
 						Edges newEdge=new Edges(from, to);
@@ -192,19 +189,11 @@ public class Graph{
 	 */
 	public void BFS(Graph g,VertexNode v,Queue<VertexNode>q,int functionIndex){
 		//访问节点v，调用SpeakEasy方法
-		File f=new File("D:\\traverseResult.txt");
-		StringBuffer sb=new StringBuffer();
-		
+
 		SpeakEasy speak=new SpeakEasy();
 		ExtractCommunities ec=new ExtractCommunities();
 		
 		try {
-			OutputStreamWriter out=new OutputStreamWriter(new FileOutputStream(f)); 
-			sb.append("从节点："+v.vertexName );
-			sb.append("开始遍历");
-			out.write(sb.toString());
-			System.out.println("遍历开始节点："+v.vertexName);
-			
 			switch (functionIndex) {
 			case 0:
 				speak.initializeLabelBuffer(g,v);
@@ -213,10 +202,10 @@ public class Graph{
 				speak.fillLabelBuffer(g,v);
 				break;
 			case 2:
-				speak.calcuGlobalFrequency(g, v, g.globalFrequencies);
+				speak.calcuGlobalFrequency(g, v);
 				break;
 			case 3:
-				speak.determineAndAlterLabel(g, v, g.globalFrequencies);
+				speak.determineAndAlterLabel(g, v);
 				break;
 			case 4:
 				ec.extractCommunity(g, v);
@@ -242,12 +231,10 @@ public class Graph{
 							speak.fillLabelBuffer(g,curNeighbor);
 							break;
 						case 2:
-							System.out.println("开始计算全局概率");
-							speak.calcuGlobalFrequency(g, curNeighbor, globalFrequencies);
+							speak.calcuGlobalFrequency(g, curNeighbor);
 							break;
 						case 3:
-							System.out.println("确定要更新的标签");
-							speak.determineAndAlterLabel(g, curNeighbor, globalFrequencies);
+							speak.determineAndAlterLabel(g, curNeighbor);
 							break;
 						case 4:
 							ec.extractCommunity(g, curNeighbor);
@@ -255,7 +242,6 @@ public class Graph{
 						default:
 							break;
 						}
-						out.write(curNeighbor.vertexName);
 						q.offer(curNeighbor);
 						
 						g.visited.add(neighborName);
@@ -263,8 +249,7 @@ public class Graph{
 					}//if
 				}//for
 			}//while
-			out.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

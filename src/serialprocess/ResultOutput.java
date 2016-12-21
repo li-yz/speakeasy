@@ -11,7 +11,7 @@ import java.util.Map;
 public class ResultOutput {
 
 	public void outputResult(Graph g) throws IOException{
-		 FileWriter writer = new FileWriter("d://result2.txt");
+		 FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\result2.txt");
          BufferedWriter bw = new BufferedWriter(writer);
          
 		Iterator outIterator=g.map.keySet().iterator();
@@ -31,7 +31,7 @@ public class ResultOutput {
 	}
 	
 	public void outputCommunities(Graph g) throws IOException{
-		 FileWriter writer = new FileWriter("d://communities.txt");
+		 FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\communities.txt");
         BufferedWriter bw = new BufferedWriter(writer);
         
 		Iterator it=g.Communities.keySet().iterator();
@@ -52,7 +52,7 @@ public class ResultOutput {
 	
 	//输出社区划分结果
 	public void outputCommunities(Map<String, List<String>> partition) throws IOException{
-		FileWriter writer = new FileWriter("d:\\最终结果\\finalPartition.txt");
+		FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\finalPartition.txt");
 		BufferedWriter bw = new BufferedWriter(writer);
        
 		Iterator it=partition.entrySet().iterator();
@@ -74,7 +74,7 @@ public class ResultOutput {
 	
 	//输出重叠节点
 	public void outputOverLapNodes(Map<String, List<String>> nodeAndCommunities) throws IOException{
-		FileWriter writer = new FileWriter("d:\\最终结果\\overlapNodes.txt");
+		FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapNodes.txt");
 		BufferedWriter bw = new BufferedWriter(writer);
       
 		Iterator it=nodeAndCommunities.entrySet().iterator();
@@ -96,36 +96,13 @@ public class ResultOutput {
 		writer.close();
 	}
 	
-	//验证读取到的数据的正确性
-	public void validateGraph(Graph g) throws IOException{
-		 FileWriter writer = new FileWriter("d:\\读取到的图数据\\graphGeted.txt");
-        BufferedWriter bw = new BufferedWriter(writer);
-        
-			StringBuffer sb=new StringBuffer();
-			VertexNode vert=g.map.get("1");
-			
-			sb.append("节点："+vert.vertexName);
-			sb.append(vert.neighborList);
-			
-			bw.write(sb.toString());
-			VertexNode vert2=g.map.get("10980");
-			sb=new StringBuffer();
-			sb.append("节点："+vert2.vertexName);
-			sb.append(vert2.neighborList);
-			bw.newLine();
-			bw.write(sb.toString());
-			
-		 bw.close();
-        writer.close();
-	}
-	
 	//输出10个社区划分的中间结果
 	public void outputTempCommunities(List<ConsensusClusteringSerial> list) throws IOException{
 		for(int t=0;t < list.size();t++){
 			Map<String, List<String>> partition=new HashMap<String, List<String>>();
 			partition=list.get(t).Partition;
 			StringBuffer sb1=new StringBuffer();
-			sb1.append("d:\\划分的中间结果十个\\tempPartition"+t+".txt");
+			sb1.append("D:\\paperdata\\soybean\\community detection\\划分的中间结果\\tempPartition"+t+".txt");
 			FileWriter writer = new FileWriter(sb1.toString());
 			BufferedWriter bw = new BufferedWriter(writer);
 
@@ -153,7 +130,7 @@ public class ResultOutput {
 		for(int k=0;k < list.size();k++){
 			Map<String, String> nodeMapCommu=list.get(k).nodeCommunityMap;
 			StringBuffer sb1=new StringBuffer();
-			sb1.append("d:\\节点及其所属社区中间结果\\nodeMapCommu"+k+".txt");
+			sb1.append("D:\\paperdata\\soybean\\community detection\\节点及其所属社区中间结果\\nodeMapCommu"+k+".txt");
 			FileWriter writer = new FileWriter(sb1.toString());
 			BufferedWriter bw = new BufferedWriter(writer);
 			

@@ -28,7 +28,7 @@ public class GraphSearch {
 		for(int funcIndex=0;funcIndex < 4;funcIndex++){
 			g.BFSTraverse(g,funcIndex);
 			
-			//注意没遍历一次之后，所有节点都被访问过了，为了再进行其他处理，要把存放已访问节点的集合清空
+			//注意每遍历一次之后，所有节点都被访问过了，为了再进行其他处理，要把存放已访问节点的集合清空
 			g.visited.clear();
 		}
 		//迭代标签更新的过程，执行多次，直到节点的buffer不再有显著变化，即收敛

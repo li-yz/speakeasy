@@ -5,9 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Ê¶±ðÖØµþÉçÇø½Úµã
- */
 public class DetermineOverlapNodes {
 	public static void determine(Map<String, List<String>> finalPartition,List<String> allNodeList,CooccurMatrix a,double r,Map<String, List<String>> nodeMapCommunities){
 		//determine the overlapping nodes
@@ -52,7 +49,7 @@ public class DetermineOverlapNodes {
 						}//
 					}//if
 				}
-		}//while
+		}//whileï¿½ï¿½ï¿½ï¿½ï¿½Ð½Úµï¿½Ä±ï¿½ï¿½ï¿?
 	}//for 
 	}
 }

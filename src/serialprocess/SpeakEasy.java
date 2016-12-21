@@ -17,11 +17,9 @@ public class SpeakEasy {
 	
 	//初始化各个节点的historical label buffer中的第一个标签
 	public void initializeLabelBuffer(Graph g,VertexNode v){
-		int bufferSize=g.bufferSize;
 		v.labelBuffer.add(v.vertexName);
-//		System.out.println("第一步初始化节点："+v.vertexName);
 	}
-	//初始化节的historical label buffer中的后bufferSize-1个标签
+	//初始化节点的historical label buffer中的后bufferSize-1个标签
 	public void fillLabelBuffer(Graph g,VertexNode v){
 		int numNeighbor=v.neighborList.size();
 		int bufferSize=g.bufferSize;
@@ -37,7 +35,6 @@ public class SpeakEasy {
 			}
 		}
 			
-		System.out.println("labelbuffer初始化完毕"+v.labelBuffer);
 	}
 	
 	public int getTotalNumLabels(Graph g){
@@ -50,34 +47,30 @@ public class SpeakEasy {
 	 * 计算所有标签的全局概率
 	 * @param g 图g
 	 * @param v 当前遍历到的节点
-	 * @param globalFrequency 形参，接受main方法中定义的全局globalFrequencies的引用
-	 * 空返回值，通过改变引用globalFrequency所指的map结构达到返回值的效果。
 	 */
-	public void calcuGlobalFrequency(Graph g,VertexNode v,Map<String, Double>globalFrequency){
+	public void calcuGlobalFrequency(Graph g,VertexNode v){
 		
 		int totalLabelNum=getTotalNumLabels(g);//先计算当前时刻全局标签数量
 		int bufferSize=g.bufferSize;
 		
 		for(int bufferIndex=0;bufferIndex < bufferSize;bufferIndex++){
 			String label=v.labelBuffer.get(bufferIndex);
-			if(globalFrequency.containsKey(label)){
-				double value=globalFrequency.get(label)+(double)1/totalLabelNum;
-				globalFrequency.put(label, value);
+			if(g.globalFrequencies.containsKey(label)){
+				double value=g.globalFrequencies.get(label)+(double)1/totalLabelNum;
+				g.globalFrequencies.put(label, value);
 			}else{
 				double value=(double)1/totalLabelNum;
-				globalFrequency.put(label, value);
+				g.globalFrequencies.put(label, value);
 			}
 		}
-		System.out.println("全局概率分布计算完毕");
 	}
 	
 	/**
 	 * 计算一个节点更新时应该采取的标签，即mostUnexpectedLabel,并更新其缓冲池
 	 * @param g
 	 * @param v
-	 * @param globalFrequency
 	 */
-	public void determineAndAlterLabel(Graph g,VertexNode v,Map<String, Double>globalFrequency){
+	public void determineAndAlterLabel(Graph g,VertexNode v){
 		double maxSpecity=0.0d;
 		String specifyLabel="";
 		int bufferSize=g.bufferSize;
@@ -103,13 +96,9 @@ public class SpeakEasy {
 		while(it.hasNext()){
 			String key=(String)it.next();//actualLabel中的标签
 			
-			System.out.println("label which v can get from its neibors:"+key);
-			System.out.println("标签的全局概率:"+globalFrequency.get(key));
-			System.out.println("标签的实际数量:"+actualLabelNum);
-			
 			double expectLabelNum=0.0d;
-			if(globalFrequency.get(key) != null){
-				expectLabelNum=globalFrequency.get(key)*actualLabelNum;
+			if(g.globalFrequencies.get(key) != null){
+				expectLabelNum=g.globalFrequencies.get(key)*actualLabelNum;
 			}
 			double specity=actualLabel.get(key)-expectLabelNum;
 			if(specity >maxSpecity){
@@ -117,11 +106,8 @@ public class SpeakEasy {
 				specifyLabel=key;
 			}
 		}
-		System.out.println("更新前："+v.labelBuffer);
 		v.labelBuffer.remove(0);
 		v.labelBuffer.add(specifyLabel);
-		System.out.println("更新后："+v.labelBuffer);
-		System.out.println("节点"+v.vertexName+"buffer中有："+v.labelBuffer.size());
 	}
 	
 }

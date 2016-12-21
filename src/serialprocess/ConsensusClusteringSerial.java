@@ -15,7 +15,7 @@ public class ConsensusClusteringSerial {
 	
 	public static void main(String[] args){
 //		Graph g=new Graph(1000, 105,5,"D:\\liyanzhen\\edges.txt");// dataset without repeat edges
-		Graph g=new Graph(1000, 19032,10,"D:\\liyanzhen\\network_1.dat");
+		Graph g=new Graph(5,"D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfDistanceThreshold5.txt");
 		int n=g.map.size();
 		ResultOutput tempRo=new ResultOutput();
 		
@@ -40,7 +40,6 @@ public class ConsensusClusteringSerial {
 		while(iter.hasNext()){
 			Map.Entry entry=(Map.Entry)iter.next();
 			String node=(String)entry.getKey();
-			System.out.println("�ڵ㣺"+node+":"+g.map.get(node).neighborList);
 			allNodeList.add(node);
 			vnameToVno.put(node, seqNo);
 			seqNo++;
@@ -91,15 +90,12 @@ public class ConsensusClusteringSerial {
 		
 		for(int partiIndex=0;partiIndex < 10;partiIndex++){
 			ConsensusClusteringSerial partition=ccList.get(partiIndex);
-			System.out.println("the total num of nodes"+allNodeList.size());
-			
+
 			for(int uIndex=0;uIndex <allNodeList.size();uIndex++){
 				String unode=allNodeList.get(uIndex);
 				for(int vIndex=uIndex+1;vIndex <allNodeList.size();vIndex++){
 					String vnode=allNodeList.get(vIndex);
-					System.out.println("u vertex seq:"+uIndex);
-					System.out.println("v vertex seq:"+vIndex);
-					
+
 					//if judge whether u and v belongs to the same community
 					if(partition.nodeCommunityMap.get(unode) != null &&partition.nodeCommunityMap.get(vnode) != null && partition.nodeCommunityMap.get(unode).equals(partition.nodeCommunityMap.get(vnode))){
 						a.addMatrixValue(unode, vnode, uIndex, vIndex);

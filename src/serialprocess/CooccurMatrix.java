@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class CooccurMatrix {
-	//锟斤拷一锟斤拷锟斤拷锟斤拷映锟斤拷锟斤拷锟斤拷示锟斤拷锟斤拷锟斤拷锟�
 	Map<String, Map<String, Integer>> matrix;
 
 	public CooccurMatrix(){
@@ -18,16 +17,15 @@ public class CooccurMatrix {
 	 * 可以使用this关键字来使用这个对象的引用。
 	 */
 	public void addMatrixValue(String unode,String vnode,int uIndex,int vIndex){
-		//锟斤拷锟节碉拷u锟斤拷诘锟絭锟斤拷锟斤拷锟斤拷锟街撅拷锟酵拷锟斤拷也锟轿拷眨锟斤拷锟紸[u][v]+1
 		if( this.matrix==null|| !this.matrix.containsKey(unode)){
-			System.out.println("共生矩阵新的一行,第"+uIndex+"行");
+//			System.out.println("共生矩阵新的一行,第"+uIndex+"行");
 			Map<String, Integer>firstMap=new HashMap<String, Integer>();
 			firstMap.put(vnode, 1);
 			this.matrix.put(unode, firstMap);
 		}else{
 			System.out.println("共生矩阵的第"+uIndex+"行已存在");
 			Map<String, Integer>firstMap2=this.matrix.get(unode);
-			if(firstMap2.containsKey(vnode)){//锟节碉拷u锟斤拷v锟斤拷值锟揭伙拷锟斤拷
+			if(firstMap2.containsKey(vnode)){
 				int times=firstMap2.get(vnode)+1;
 				firstMap2.put(vnode, times);
 				this.matrix.put(unode, firstMap2);
