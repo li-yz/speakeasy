@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 识别重叠社区节点
+ */
 public class DetermineOverlapNodes {
 	public static void determine(Map<String, List<String>> finalPartition,List<String> allNodeList,CooccurMatrix a,double r,Map<String, List<String>> nodeMapCommunities){
 		//determine the overlapping nodes
