@@ -90,7 +90,6 @@ public class AdjustRandIndex {
 		double fenmu=(0.5*(sigmaRow+sigmaColomn))-(2*(sigmaRow*sigmaColomn)/(vNum*(vNum-1)));
 		double ari=fenzi/fenmu;
 		this.setR(RindexI, Rindexj, ari);
-//		System.out.println("partition"+RindexI+" and partition"+Rindexj+"µÄari value="+ari);
 	}
 	public synchronized void setR(int i,int j,double value) {
 		this.R[i][j]=value;
