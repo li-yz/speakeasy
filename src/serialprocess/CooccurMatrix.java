@@ -23,7 +23,7 @@ public class CooccurMatrix {
 			firstMap.put(vnode, 1);
 			this.matrix.put(unode, firstMap);
 		}else{
-			System.out.println("共生矩阵的第"+uIndex+"行已存在");
+//			System.out.println("共生矩阵的第"+uIndex+"行已存在");
 			Map<String, Integer>firstMap2=this.matrix.get(unode);
 			if(firstMap2.containsKey(vnode)){
 				int times=firstMap2.get(vnode)+1;

@@ -70,11 +70,11 @@ public class ConsensusClusteringSerial {
 			cc.Partition=g.Communities;
 			cc.nodeCommunityMap=g.nodeCommunity;
 			ccList.add(cc);
+			System.out.println("一次传播更新完毕");
 			//fill in the co-occurrence matrix
 		}//for,numRuns
 		System.out.println("得到的划分个数"+ccList.size());
 		System.out.println("一致化聚类开始");
-		//锟斤拷锟斤拷玫锟斤拷锟?0锟斤拷锟斤拷锟街斤拷锟?
 		try {
 			tempRo.outPutNodeMapCommunityTemp(ccList);
 			tempRo.outputTempCommunities(ccList);

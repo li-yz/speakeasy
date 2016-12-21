@@ -32,7 +32,7 @@ public class GraphSearch {
 			g.visited.clear();
 		}
 		//迭代标签更新的过程，执行多次，直到节点的buffer不再有显著变化，即收敛
-		for(int repeatTime=0;repeatTime <2;repeatTime++){
+		for(int repeatTime=0;repeatTime < 50;repeatTime++){
 			g.globalFrequencies.clear();
 			g.BFSTraverse(g,2);
 			g.visited.clear();
@@ -45,12 +45,10 @@ public class GraphSearch {
 		g.BFSTraverse(g, 4);
 		g.visited.clear();
 		
-		//输出结果到文本
-		System.out.println("一次传播更新完毕");
+		//输出当前网络图的状态到文本
 		ResultOutput ro=new ResultOutput();
 		 try {
-			ro.outputResult(g);
-			ro.outputCommunities(g);
+			ro.outputResult(g);//迭代更新50次后，保存当前网络图g的状态，即每个节点的buffer中的标签
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
