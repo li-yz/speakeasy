@@ -33,12 +33,11 @@ public class DetermineOverlapNodes {
 					}
 					double temp2=0.0d;
 					if(temp1 >0){
-						System.out.println("temp1的值"+temp1);
+//						System.out.println("temp1的值"+temp1);
 					}
 					temp2=(double)temp1/(nodeInCList.size()*10);
 					if (temp2 > r){
 						System.out.println("temp2 > r,识别重叠社区执行了");
-						//锟节碉拷v锟斤拷锟斤拷锟截碉拷锟斤拷锟斤拷诘锟?锟脚碉拷nodeMapCommunities映锟斤拷峁癸拷锟?
 						if(nodeMapCommunities.containsKey(vnodeName)){
 							List<String> strInCom=nodeMapCommunities.get(vnodeName);
 							strInCom.add(commuName);
