@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * 计算共生矩阵，共生矩阵中元素值得含义是：在多次运行社区划分算法时，两个网络图节点被 划分到同一个社区中的次数
+ */
 public class CooccurMatrix {
 	Map<String, Map<String, Integer>> matrix;
 

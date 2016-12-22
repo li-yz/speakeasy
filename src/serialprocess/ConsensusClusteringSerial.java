@@ -88,6 +88,7 @@ public class ConsensusClusteringSerial {
 		
 
 		
+		//遍历所有的划分结果，计算共生矩阵
 		for(int partiIndex=0;partiIndex < 10;partiIndex++){
 			ConsensusClusteringSerial partition=ccList.get(partiIndex);
 
@@ -162,58 +163,9 @@ public class ConsensusClusteringSerial {
 		double r=(double)1/maxCommuSize;
 		
 		//determine the overlapping nodes
-//		Iterator finIter=finalPartition.entrySet().iterator();
-//		while(finIter.hasNext()){
-//			Map.Entry entry=(Map.Entry)finIter.next();
-//			String commuName=(String)entry.getKey();
-//			List<String> nodeInCList=finalPartition.get(commuName);
-//			for(int i=0;i < allNodeList.size();i++){
-//				String vnodeName=allNodeList.get(i);
-//				if(nodeInCList.contains(vnodeName) || !a.matrix.containsKey(vnodeName)){
-//					continue;
-//				}else{
-//					Map<String, Integer> vMap=a.matrix.get(vnodeName);
-//					
-//					int temp1=0;
-//					try {
-//						for(int j=0;j < nodeInCList.size();j++){
-//							String uName=nodeInCList.get(j);
-//							
-//							if(uName!=null && vMap.containsKey(uName)){
-//								temp1+=vMap.get(uName);
-//							}else{
-//								continue;
-//							}
-//						}
-//					} catch (Exception e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					double temp2=0.0d;
-//					if(temp1 >0){
-//						System.out.println("temp1的值"+temp1);
-//					}
-//					temp2=(double)temp1/(nodeInCList.size()*10);
-//					if (temp2 > r){
-//						System.out.println("temp2 > r,识别重叠社区执行了");
-//						//锟节碉拷v锟斤拷锟斤拷锟截碉拷锟斤拷锟斤拷诘锟?锟脚碉拷nodeMapCommunities映锟斤拷峁癸拷锟?
-//						if(nodeMapCommunities.containsKey(vnodeName)){
-//							List<String> strInCom=nodeMapCommunities.get(vnodeName);
-//							strInCom.add(commuName);
-//							nodeMapCommunities.put(vnodeName, strInCom);
-//						}else{
-//							List<String> strInCom=new ArrayList<String>();
-//							strInCom.add(commuName);
-//							nodeMapCommunities.put(vnodeName, strInCom);
-//						}//
-//					}//if
-//				}
-//			}//for 锟斤拷锟斤拷锟叫节碉拷谋锟斤拷锟?
-//		}//while  determine overlap nodes
-		
 		DetermineOverlapNodes.determine(finalPartition, allNodeList, a, r, nodeMapCommunities);
 		
-		System.out.println("nodeMapCommunities的大小："+nodeMapCommunities.size());
+		System.out.println("nodeMapCommunities的大小即重叠节点的个数："+nodeMapCommunities.size());
 		
 		//锟斤拷锟絝inalRepresentition锟斤拷nodeMapCommunities锟叫碉拷锟斤拷息
 		ResultOutput ro=new ResultOutput();

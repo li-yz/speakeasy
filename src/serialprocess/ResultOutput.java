@@ -52,7 +52,7 @@ public class ResultOutput {
 	
 	//输出社区划分结果
 	public void outputCommunities(Map<String, List<String>> partition) throws IOException{
-		FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\finalPartition.txt");
+		FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\最终结果\\finalPartition.txt");
 		BufferedWriter bw = new BufferedWriter(writer);
        
 		Iterator it=partition.entrySet().iterator();
@@ -84,7 +84,7 @@ public class ResultOutput {
 			List<String> communitiesList=nodeAndCommunities.get(nodeName);
 			StringBuffer sb=new StringBuffer();
 			
-			sb.append("节点："+nodeName+"属于："+communitiesList+"个社区：");
+			sb.append("节点："+nodeName+"属于："+communitiesList.size()+"个社区：");
 			for(String community :communitiesList){
 				sb.append(community+"\t");
 			}
