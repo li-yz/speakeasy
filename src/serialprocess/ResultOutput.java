@@ -3,7 +3,6 @@ package serialprocess;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,7 @@ import java.util.Map;
 public class ResultOutput {
 
 	public void outputResult(Graph g) throws IOException{
-		 FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\result2.txt");
+		 FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\graph and communities of the last iteration\\labelsInBuffers.txt");
          BufferedWriter bw = new BufferedWriter(writer);
          
 		Iterator outIterator=g.map.keySet().iterator();
@@ -31,7 +30,7 @@ public class ResultOutput {
 	}
 	
 	public void outputCommunities(Graph g) throws IOException{
-		 FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\communities.txt");
+		 FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\graph and communities of the last iteration\\communities.txt");
         BufferedWriter bw = new BufferedWriter(writer);
         
 		Iterator it=g.Communities.keySet().iterator();
@@ -84,7 +83,7 @@ public class ResultOutput {
 			List<String> communitiesList=nodeAndCommunities.get(nodeName);
 			StringBuffer sb=new StringBuffer();
 			
-			sb.append("节点："+nodeName+"属于："+communitiesList.size()+"个社区：");
+			sb.append("节点："+nodeName+"同时属于 "+communitiesList.size()+" 个社区：");
 			for(String community :communitiesList){
 				sb.append(community+"\t");
 			}
@@ -97,21 +96,20 @@ public class ResultOutput {
 	}
 	
 	//输出10个社区划分的中间结果
-	public void outputTempCommunities(List<ConsensusClusteringSerial> list) throws IOException{
+	public void outputTempCommunities(List<Partition> list) throws IOException{
 		for(int t=0;t < list.size();t++){
-			Map<String, List<String>> partition=new HashMap<String, List<String>>();
-			partition=list.get(t).Partition;
+			Map<String, List<String>> communities=list.get(t).communities;
 			StringBuffer sb1=new StringBuffer();
 			sb1.append("D:\\paperdata\\soybean\\community detection\\划分的中间结果\\tempPartition"+t+".txt");
 			FileWriter writer = new FileWriter(sb1.toString());
 			BufferedWriter bw = new BufferedWriter(writer);
 
        
-			Iterator it=partition.entrySet().iterator();
+			Iterator it=communities.entrySet().iterator();
 			while(it.hasNext()){
 				Map.Entry entry=(Map.Entry)it.next();
 				String communityTag=(String)entry.getKey();
-				List<String> nodesList=partition.get(communityTag);
+				List<String> nodesList=communities.get(communityTag);
 				StringBuffer sb=new StringBuffer();
 				sb.append(communityTag+":");
 				for(String node :nodesList){
@@ -126,7 +124,7 @@ public class ResultOutput {
 		}//for 10个社区
 	}
 	
-	public void outPutNodeMapCommunityTemp(List<ConsensusClusteringSerial> list) throws IOException{
+	public void outPutNodeMapCommunityTemp(List<Partition> list) throws IOException{
 		for(int k=0;k < list.size();k++){
 			Map<String, String> nodeMapCommu=list.get(k).nodeCommunityMap;
 			StringBuffer sb1=new StringBuffer();

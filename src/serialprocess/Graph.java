@@ -53,11 +53,19 @@ public class Graph{
 		
 	}
 	//带参构造器，初始化图的节点数，从而知道邻接矩阵的阶数
-	Graph(int bSize,String filePath)
+	Graph(int bSize,String filePath,int whetherRepeat)
 	{
 		this.bufferSize=bSize;
-		readData(filePath,totalEdgesList,map);//读文本初始化边集（就是图的邻接矩阵）
-//		readDataForRepeatEdges(filePath,totalEdgesList,map);//原数据集中的边有重复的，即一条边表示了两次
+		switch (whetherRepeat){
+			case 0:
+				readData(filePath,totalEdgesList,map);//读文本初始化边集（就是图的邻接矩阵）
+				break;
+			case 1:
+				readDataForRepeatEdges(filePath,totalEdgesList,map);//原数据集中的边有重复的，即一条边表示了两次
+				break;
+			default:
+				break;
+		}
 	}
 	
 	
@@ -106,6 +114,8 @@ public class Graph{
 						}
 						
 				}
+				bf.close();
+				read.close();
 				System.out.println("读取完毕：有边相连的节点"+map.size()+"图的总边数"+edgelist.size());
 				
 			}  catch (Exception e) {
@@ -164,7 +174,7 @@ public class Graph{
 	/**
 	 * 广度优先遍历
 	 * @param g 图
-	 * @param functionIndex 如何访问一个节点的函数方法标号
+	 * @param functionIndex 如何访问一个节点的函数方法标号,0:初始化第一步  1：初始化第二步 填满每个buffer  2：计算全局概率  3：确定每个节点要更新的标签  4：提取社区划分结果
 	 */
 	public void BFSTraverse(Graph g,int functionIndex){
 		Queue<VertexNode> q=new LinkedList<VertexNode>();
@@ -217,7 +227,6 @@ public class Graph{
 			q.offer(v);
 			while(!q.isEmpty()){
 				VertexNode queueFront=q.poll();
-//				System.out.println("队头节点："+cur.vertexName);
 				for(int j=0;j<queueFront.neighborList.size();j++){
 					String neighborName=queueFront.neighborList.get(j);
 					VertexNode curNeighbor=g.map.get(neighborName);

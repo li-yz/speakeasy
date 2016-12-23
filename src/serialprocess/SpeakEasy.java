@@ -9,6 +9,9 @@ import java.util.Set;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
+/**
+ *
+ */
 public class SpeakEasy {
 	/**
 	 * 全局变量

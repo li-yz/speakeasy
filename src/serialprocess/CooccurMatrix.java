@@ -57,7 +57,12 @@ public class CooccurMatrix {
 				int value=secMap.get(vnode);
 				if(matrixNew.containsKey(vnode)){
 					Map<String, Integer> vmap=matrixNew.get(vnode);
-					vmap.put(unode, value);
+					if(vmap.containsKey(unode)){
+						value+=vmap.get(unode);
+						vmap.put(unode, value);
+					}else {
+						vmap.put(unode, value);
+					}
 					matrixNew.put(vnode, vmap);
 				}else{
 					Map<String, Integer> newMap=new HashMap<String, Integer>();

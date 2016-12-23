@@ -13,9 +13,8 @@ import java.util.Map;
  */
 public class GraphSearch {
 	public void communityDetectProcedure(Graph g) {
-		System.out.println("查看边数："+g.totalEdgesList.size());
-		System.out.println("查看节点数："+g.map.size());//注意在图中有孤立的节点
-		
+		System.out.println("一次社区发现迭代，开始");
+
 		/**
 		 * 全局变量，初始化以后网络图中总的标签数
 		 * @param v
@@ -49,11 +48,13 @@ public class GraphSearch {
 		ResultOutput ro=new ResultOutput();
 		 try {
 			ro.outputResult(g);//迭代更新50次后，保存当前网络图g的状态，即每个节点的buffer中的标签
+			 ro.outputCommunities(g);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
+		System.out.println("一次社区发现，完毕");
 	}
 }
 
