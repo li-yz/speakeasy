@@ -19,7 +19,6 @@ public class GraphSearch {
 		 * 全局变量，初始化以后网络图中总的标签数
 		 * @param v
 		 */
-		int totalLabelNum=0;
 	//repeat;
 		
 		//按照SpeakEasy算法的步骤对图进行遍历，

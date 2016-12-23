@@ -43,7 +43,7 @@ public class DetermineOverlapNodes {
 					double temp2=0.0d;
 					temp2=(double)temp1/(nodeInCList.size()*10);
 					if (temp2 > r){//大于阈值，即节点v是重叠节点，属于当前社区c
-						System.out.println("temp2 > r,节点v: "+vnodeName+" 也属于社区： "+commuName);
+//						System.out.println("temp2 > r,节点v: "+vnodeName+" 也属于社区： "+commuName);
 						if(nodeMapCommunities.containsKey(vnodeName)){
 							List<String> strInCom=nodeMapCommunities.get(vnodeName);
 							strInCom.add(commuName);

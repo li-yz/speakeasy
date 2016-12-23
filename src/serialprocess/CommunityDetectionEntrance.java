@@ -1,22 +1,23 @@
 package serialprocess;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class CommunityDetectionEntrance {
 	
 	public static void main(String[] args){
-		int whetherRepeat = 0;//网络图中的表示方式，是否有重复边,0：无重复边，1：有重复边
-		String networkPath = "D:\\paperdata\\soybean\\community detection\\input network\\testnetwork-overlap.txt";
-		Graph g=new Graph(5,networkPath,whetherRepeat);
-		int n=g.map.size();
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String startDate = sdf.format(date);
+
+		int whetherRepeat = 0;//网络图中的表示方式，是否有重复边,0：无重复边，1：有重复边 ！！！！！！！！！
+		String networkPath = "D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfDistanceThreshold3.txt";
+		Graph g = null;
+
 		ResultOutput tempRo=new ResultOutput();
 
-		List<serialprocess.Partition> partitionList=new ArrayList<serialprocess.Partition>();
+		List<Partition> partitionList=new ArrayList<Partition>();
 
 		//共生矩阵A的对象表示
 		CooccurMatrix a=new CooccurMatrix();
@@ -28,21 +29,19 @@ public class CommunityDetectionEntrance {
 		Map<String, List<String>> nodeMapCommunities=new HashMap<String, List<String>>();
 
 		Map<String, List<String>> bestPartitionCommunities;
-
-
-		g=null;
+		Map<String, String> bestPartitionNodeMapCommu;
 
 		GraphSearch communityDetect=new GraphSearch();
 		System.out.println("开始重复迭代聚类");
 		for(int numRuns=1;numRuns < 11;numRuns++){
 			System.out.println("迭代聚类第 "+numRuns+"次");
 			//每一次repeat都要重新 new一下g,因为Java中的赋值操作，操作的始终是对象的引用，若不new重新分配地址，ccList中的元素都将指向相同对象g的地址空间
-			g=new Graph(5,networkPath,whetherRepeat);
+			g=new Graph(6,networkPath,whetherRepeat);
 
+			Partition partition=new Partition();
 			communityDetect.communityDetectProcedure(g);
 
 			//保存每一次运行的划分结果
-			serialprocess.Partition partition=new Partition();
 			partition.communities=g.Communities;
 			partition.nodeCommunityMap=g.nodeCommunity;
 			partitionList.add(partition);
@@ -53,6 +52,7 @@ public class CommunityDetectionEntrance {
 
 		System.out.println("得到的划分个数"+partitionList.size());
 
+		int n=g.map.size();
 		Iterator iter=g.map.entrySet().iterator();
 		while(iter.hasNext()){
 			Map.Entry entry=(Map.Entry)iter.next();
@@ -137,7 +137,7 @@ public class CommunityDetectionEntrance {
 		}
 		System.out.println("最有聚类划分序号："+index);
 		bestPartitionCommunities=partitionList.get(index).communities;
-		Map<String, String> bestPartitionNodeMapCommu=partitionList.get(index).nodeCommunityMap;
+		bestPartitionNodeMapCommu=partitionList.get(index).nodeCommunityMap;
 		// select the max community from the bestPartitionCommunities,get r value
 		int maxCommuNum=0;
 		int tsize=0;
@@ -160,10 +160,17 @@ public class CommunityDetectionEntrance {
 		ResultOutput ro=new ResultOutput();
 		try {
 			System.out.println("print final result!!!");
+			System.out.println("总的社区个数："+bestPartitionCommunities.size());
+			System.out.println("重叠社区节点个数："+nodeMapCommunities.size());
 			ro.outputCommunities(bestPartitionCommunities);
 			ro.outputOverLapNodes(nodeMapCommunities);
 			System.out.println("OK! finish!");
-		} catch (IOException e) {
+			date = new Date();
+			String endDate = sdf.format(date);
+
+			int processTime = (int)(sdf.parse(endDate).getTime() - sdf.parse(startDate).getTime())/(1000*60); //做差得出来的是毫秒，转成 分钟为单位
+			System.out.println("总的执行时间 = "+processTime +" 分钟");
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
