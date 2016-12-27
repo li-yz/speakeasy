@@ -29,15 +29,15 @@ public class ResultOutput {
          writer.close();
 	}
 	
-	public void outputCommunities(Graph g) throws IOException{
+	public void outputCommunities(Graph g,Partition partition) throws IOException{
 		 FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\graph and communities of the last iteration\\communities.txt");
         BufferedWriter bw = new BufferedWriter(writer);
         
-		Iterator it=g.Communities.keySet().iterator();
+		Iterator it=partition.communities.keySet().iterator();
 		while(it.hasNext()){
 			StringBuffer sb=new StringBuffer();
 			String communityTag=(String)it.next();
-			List<String> nodesList=g.Communities.get(communityTag);
+			List<String> nodesList=partition.communities.get(communityTag);
 			
 			sb.append("社区标志："+communityTag+"内：");
 			sb.append(nodesList);

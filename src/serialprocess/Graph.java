@@ -42,12 +42,6 @@ public class Graph{
 	 */
 	Map<String, Double>globalFrequencies=new HashMap<String,Double>();
 	
-	//最后识别出的社区集合C,其中包括C1,C2,...Ck等多个社区,key域代表一个社区的标记，value域中是在这个社区内的节点名集合
-	Map<String, List<String>> Communities=new HashMap<String, List<String>>();
-	
-	//存储经过detection以后，节点及其对应的社区。key:节点名-value：社区标志名
-	Map<String, String> nodeCommunity=new HashMap<String, String>();
-	
 	Graph()
 	{
 		
@@ -176,7 +170,7 @@ public class Graph{
 	 * @param g 图
 	 * @param functionIndex 如何访问一个节点的函数方法标号,0:初始化第一步  1：初始化第二步 填满每个buffer  2：计算全局概率  3：确定每个节点要更新的标签  4：提取社区划分结果
 	 */
-	public void BFSTraverse(Graph g,int functionIndex){
+	public void BFSTraverse(Graph g,int functionIndex,Partition partition){
 		Queue<VertexNode> q=new LinkedList<VertexNode>();
 		Iterator bfsIter=g.map.entrySet().iterator();
 		while(bfsIter.hasNext()){
@@ -184,7 +178,7 @@ public class Graph{
 			String vertexName=(String)entry.getKey();
 			VertexNode v=g.map.get(vertexName);
 			if(!g.visited.contains(vertexName)){
-				BFS(g, v, q,functionIndex);
+				BFS(g, v, q,functionIndex,partition);
 			}
 		}
 	}
@@ -197,7 +191,7 @@ public class Graph{
 	 * @param functionIndex SpeakEasy类中的方法标号，标号值代表初始化到更新标签的数序，
 	 * 决定在遍历图的时候对节点进行怎样的处理（初始化、计算全局概率分布、更新节点的buffer等操作）
 	 */
-	public void BFS(Graph g,VertexNode v,Queue<VertexNode>q,int functionIndex){
+	public void BFS(Graph g,VertexNode v,Queue<VertexNode>q,int functionIndex,Partition partition){
 		//访问节点v，调用SpeakEasy方法
 
 		SpeakEasy speak=new SpeakEasy();
@@ -218,7 +212,7 @@ public class Graph{
 				speak.determineAndAlterLabel(g, v);
 				break;
 			case 4:
-				ec.extractCommunity(g, v);
+				ec.extractCommunity(g, v, partition);
 				break;
 			default:
 				break;
@@ -246,7 +240,7 @@ public class Graph{
 							speak.determineAndAlterLabel(g, curNeighbor);
 							break;
 						case 4:
-							ec.extractCommunity(g, curNeighbor);
+							ec.extractCommunity(g, curNeighbor, partition);
 							break;
 						default:
 							break;
