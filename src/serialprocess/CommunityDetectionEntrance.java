@@ -1,5 +1,6 @@
 package serialprocess;
 
+import utils.MySerialization;
 import utils.MyPrint;
 
 import java.io.IOException;
@@ -141,7 +142,8 @@ public class CommunityDetectionEntrance {
 				index=i;
 				}
 		}
-		System.out.println("最有聚类划分序号："+index);
+		System.out.println("最优聚类划分序号："+index);
+		Partition bestPartition = partitionList.get(index);
 		bestPartitionCommunities=partitionList.get(index).communities;
 		bestPartitionNodeMapCommu=partitionList.get(index).nodeCommunityMap;
 		// select the max community from the bestPartitionCommunities,get r value
@@ -215,6 +217,16 @@ public class CommunityDetectionEntrance {
 		MyPrint.print("社区大小[26,35]的有： "+numOf26_35+" 个");
 		MyPrint.print("社区大小[36,50]的有： "+numOf36_50+" 个");
 		MyPrint.print("社区大小[50,+∞]的有： "+numOf50_OO+" 个");
+
+		//将重叠社区划分结果保存到OverlapPartition对象中，便于序列化，后续可以直接反序列化，针对社区发现结果进行分析
+		OverlapPartition overlapPartition = new OverlapPartition();
+		overlapPartition.setCommunities(bestPartitionCommunities);
+		overlapPartition.setNodeMapCommunities(nodeMapCommunities);
+		MySerialization mySerialization = new MySerialization();
+		mySerialization.serializeOverlapResult(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
+
+		//同时也将非重叠的 最优划分结果也序列化
+		mySerialization.serializeOverlapResult(bestPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
 
 	}//main
 
