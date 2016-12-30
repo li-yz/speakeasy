@@ -2,6 +2,7 @@ package postprocess;
 
 import serialprocess.OverlapPartition;
 import serialprocess.Partition;
+import utils.FastSort;
 import utils.MyPrint;
 import utils.MySerialization;
 
@@ -14,25 +15,45 @@ import java.util.*;
  */
 public class Analysis {
     public static void main(String[] args){
-        testSerialization();
+        Analysis analysis = new Analysis();
         MySerialization mySerialization = new MySerialization();
         Partition bestNonOverlapPartition = (Partition) mySerialization.antiSerializeOverlapPartition("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
         OverlapPartition overlapPartition = (OverlapPartition)mySerialization.antiSerializeOverlapPartition("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
+        MyPrint.print("非重叠社区个数： "+bestNonOverlapPartition.getCommunities().size());
+        MyPrint.print("重叠社区个数： "+overlapPartition.getCommunities().size());
 
+        analysis.getNonOverlapCommunitySizeDistribution(bestNonOverlapPartition);
+        analysis.getCommunitySizeDistribution(overlapPartition);
 
     }
 
-    private void getCommunitySizeDistribute(OverlapPartition overlapPartition){
-        List<Integer> communitySizeDistribute = new ArrayList<Integer>();
+    private void getNonOverlapCommunitySizeDistribution(Partition partition){
+        List<Integer> communitySizeDistribution = new ArrayList<Integer>();
+        Map<String,List<String>> communities = partition.getCommunities();
+        Iterator iterator = communities.entrySet().iterator();
+        while(iterator.hasNext()){
+            Map.Entry entry = (Map.Entry<String,List<String>>)iterator.next();
+            int size = ((List<String>)entry.getValue()).size();
+
+            communitySizeDistribution.add(size);
+        }
+        FastSort.fastSort(communitySizeDistribution,0,communitySizeDistribution.size()-1);
+        MyPrint.print("非重叠社区size分布： "+communitySizeDistribution);
+    }
+
+    private void getCommunitySizeDistribution(OverlapPartition overlapPartition){
+        List<Integer> communitySizeDistribution = new ArrayList<Integer>();
         Map<String,List<String>> communities = overlapPartition.getCommunities();
         Iterator iterator = communities.entrySet().iterator();
         while(iterator.hasNext()){
             Map.Entry entry = (Map.Entry<String,List<String>>)iterator.next();
             int size = ((List<String>)entry.getValue()).size();
 
-            communitySizeDistribute.add(size);
+            communitySizeDistribution.add(size);
         }
+        FastSort.fastSort(communitySizeDistribution,0,communitySizeDistribution.size()-1);
+        MyPrint.print("重叠社区size分布： "+communitySizeDistribution);
     }
 
     private void analysisSmallCommunity(){

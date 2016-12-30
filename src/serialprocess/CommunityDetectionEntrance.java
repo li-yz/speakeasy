@@ -10,6 +10,8 @@ import java.util.*;
 public class CommunityDetectionEntrance {
 	
 	public static void main(String[] args){
+		MySerialization mySerialization = new MySerialization();//序列化工具对象
+
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String startDate = sdf.format(date);
@@ -144,6 +146,10 @@ public class CommunityDetectionEntrance {
 		}
 		System.out.println("最优聚类划分序号："+index);
 		Partition bestPartition = partitionList.get(index);
+
+		//将非重叠的 最优划分结果序列化保存
+		mySerialization.serializeOverlapResult(bestPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+
 		bestPartitionCommunities=partitionList.get(index).communities;
 		bestPartitionNodeMapCommu=partitionList.get(index).nodeCommunityMap;
 		// select the max community from the bestPartitionCommunities,get r value
@@ -222,11 +228,8 @@ public class CommunityDetectionEntrance {
 		OverlapPartition overlapPartition = new OverlapPartition();
 		overlapPartition.setCommunities(bestPartitionCommunities);
 		overlapPartition.setNodeMapCommunities(nodeMapCommunities);
-		MySerialization mySerialization = new MySerialization();
-		mySerialization.serializeOverlapResult(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
-		//同时也将非重叠的 最优划分结果也序列化
-		mySerialization.serializeOverlapResult(bestPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+		mySerialization.serializeOverlapResult(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
 	}//main
 
