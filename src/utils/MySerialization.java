@@ -8,7 +8,7 @@ import java.io.*;
  * Created by Liyanzhen on 2016/12/28.
  */
 public class MySerialization {
-    public void serializeOverlapResult(Object object,String path){
+    public void serializeObject(Object object, String path){
         try {
             File file = new File(path);
             FileOutputStream fos = new FileOutputStream(file);
@@ -25,7 +25,7 @@ public class MySerialization {
         }
     }
 
-    public Object antiSerializeOverlapPartition(String path ){
+    public Object antiSerializeObject(String path ){
         Object object = null;
         try{
             File file = new File(path);

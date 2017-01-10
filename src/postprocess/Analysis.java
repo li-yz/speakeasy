@@ -1,11 +1,14 @@
 package postprocess;
 
+import serialprocess.Graph;
 import serialprocess.OverlapPartition;
 import serialprocess.Partition;
+import utils.CommunityAnalysisResultOutput;
 import utils.FastSort;
 import utils.MyPrint;
 import utils.MySerialization;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -17,8 +20,8 @@ public class Analysis {
     public static void main(String[] args){
         Analysis analysis = new Analysis();
         MySerialization mySerialization = new MySerialization();
-        Partition bestNonOverlapPartition = (Partition) mySerialization.antiSerializeOverlapPartition("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
-        OverlapPartition overlapPartition = (OverlapPartition)mySerialization.antiSerializeOverlapPartition("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
+        Partition bestNonOverlapPartition = (Partition) mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+        OverlapPartition overlapPartition = (OverlapPartition)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
         MyPrint.print("非重叠社区个数： "+bestNonOverlapPartition.getCommunities().size());
         MyPrint.print("重叠社区个数： "+overlapPartition.getCommunities().size());
@@ -26,6 +29,36 @@ public class Analysis {
         analysis.getNonOverlapCommunitySizeDistribution(bestNonOverlapPartition);
         analysis.getCommunitySizeDistribution(overlapPartition);
 
+//        Graph g = (Graph)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
+//        double mudularity = CalculateModularity.calculateModularity(g,bestNonOverlapPartition);
+//        MyPrint.print("非重叠情况下，得到的划分结果的模块度："+mudularity);
+
+        rankNodeCommunities(overlapPartition);
+    }
+
+    /**
+     * 统计重叠社区结果中，重叠社区节点及其所属社区个数 的分布情况
+     * @param overlapPartition
+     */
+    public static void rankNodeCommunities(OverlapPartition overlapPartition){
+        Map<String,List<String>> nodeMapCommunities = overlapPartition.getNodeMapCommunities();
+        List<Integer> communityNumOfNodeBelong = new ArrayList<Integer>();
+        Map<String,Integer> nodeMapCommunitiesNum = new HashMap<String, Integer>();
+
+        Iterator iter = nodeMapCommunities.entrySet().iterator();
+        while(iter.hasNext()){
+            Map.Entry entry = (Map.Entry<String,List<String>>)iter.next();
+            List<String> communities = (List<String>)entry.getValue();
+            int size = communities.size();
+            communityNumOfNodeBelong.add(size);
+            nodeMapCommunitiesNum.put((String)entry.getKey(),size);
+        }
+        FastSort.fastSort(communityNumOfNodeBelong,0,communityNumOfNodeBelong.size()-1);
+
+        MyPrint.print("重叠节点个数："+communityNumOfNodeBelong.size());
+        int length = communityNumOfNodeBelong.size();
+        MyPrint.print("一个节点所属的最多社区个数"+communityNumOfNodeBelong.get(length-1));
+        MyPrint.print("重叠社区节点---节点属于的社区个数排序： "+communityNumOfNodeBelong);
     }
 
     private void getNonOverlapCommunitySizeDistribution(Partition partition){
@@ -40,6 +73,13 @@ public class Analysis {
         }
         FastSort.fastSort(communitySizeDistribution,0,communitySizeDistribution.size()-1);
         MyPrint.print("非重叠社区size分布： "+communitySizeDistribution);
+
+        String outputPath = "D:\\paperdata\\soybean\\community detection\\community analysis\\非重叠社区size分布.txt";
+        try {
+            CommunityAnalysisResultOutput.outputCommunitiesDistribution(communitySizeDistribution, outputPath);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     private void getCommunitySizeDistribution(OverlapPartition overlapPartition){
@@ -54,6 +94,12 @@ public class Analysis {
         }
         FastSort.fastSort(communitySizeDistribution,0,communitySizeDistribution.size()-1);
         MyPrint.print("重叠社区size分布： "+communitySizeDistribution);
+        String outputPath = "D:\\paperdata\\soybean\\community detection\\community analysis\\重叠社区size分布.txt";
+        try {
+            CommunityAnalysisResultOutput.outputCommunitiesDistribution(communitySizeDistribution, outputPath);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     private void analysisSmallCommunity(){
@@ -69,9 +115,9 @@ public class Analysis {
         overlapPartition.setCommunities(communities);
 
         MySerialization mySerialization = new MySerialization();
-        mySerialization.serializeOverlapResult(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\test.obj");
+        mySerialization.serializeObject(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\test.obj");
 
-        OverlapPartition testObject = (OverlapPartition) mySerialization.antiSerializeOverlapPartition("D:\\paperdata\\soybean\\community detection\\最终结果\\test.obj");
+        OverlapPartition testObject = (OverlapPartition) mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\test.obj");
 
         MyPrint.print("反序列化： "+testObject.getCommunities().get("first").get(0));
     }

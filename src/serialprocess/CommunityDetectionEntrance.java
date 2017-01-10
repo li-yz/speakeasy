@@ -20,6 +20,9 @@ public class CommunityDetectionEntrance {
 		String networkPath = "D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfDistanceThreshold5.txt";
 		Graph g = new Graph(6,networkPath,whetherRepeat);
 
+		//序列化网络图g，主要目的是保存网络图结构，方便后续计算模块度用
+		mySerialization.serializeObject(g,"D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
+
 		//保存所有节点，便于循环遍历所有节点
 		List<String> allNodeList=new ArrayList<String>();
 
@@ -148,7 +151,7 @@ public class CommunityDetectionEntrance {
 		Partition bestPartition = partitionList.get(index);
 
 		//将非重叠的 最优划分结果序列化保存
-		mySerialization.serializeOverlapResult(bestPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+		mySerialization.serializeObject(bestPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
 
 		bestPartitionCommunities=partitionList.get(index).communities;
 		bestPartitionNodeMapCommu=partitionList.get(index).nodeCommunityMap;
@@ -229,7 +232,7 @@ public class CommunityDetectionEntrance {
 		overlapPartition.setCommunities(bestPartitionCommunities);
 		overlapPartition.setNodeMapCommunities(nodeMapCommunities);
 
-		mySerialization.serializeOverlapResult(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
+		mySerialization.serializeObject(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
 	}//main
 

@@ -1,12 +1,6 @@
 package serialprocess;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,24 +17,24 @@ import java.util.Set;
  * @author Administrator
  *
  */
-public class Graph{
+public class Graph implements Serializable{
 	int vertexNum;
 	int edgeNum;
-	int bufferSize;
+	public int bufferSize;
 	
 	//用map来存放（节点名称，和节点对象的引用）
-	Map<String, VertexNode> map=new HashMap<String, VertexNode>();
+	public Map<String, VertexNode> map=new HashMap<String, VertexNode>();
 	
 	//存放已访问节点名
-	Set<String> visited=new HashSet<String>();
+	public Set<String> visited=new HashSet<String>();
 	
-	List<Edges> totalEdgesList=new ArrayList<Edges>();
+	public List<Edges> totalEdgesList=new ArrayList<Edges>();
 	
 	/**
 	 * 
 	 * 定义存放标签的全局概率的数据结构globalFrequencies，用hashmap来实现
 	 */
-	Map<String, Double>globalFrequencies=new HashMap<String,Double>();
+	public Map<String, Double>globalFrequencies=new HashMap<String,Double>();
 	
 	Graph()
 	{

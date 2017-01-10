@@ -1,5 +1,6 @@
 package serialprocess;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,14 +12,14 @@ import java.util.Map;
  * @author Administrator
  *
  */
-public class VertexNode{
-	String vertexName;
+public class VertexNode implements Serializable{
+	public String vertexName;
 	
 	//存放相邻节点的名字
-	List<String> neighborList=new ArrayList<String>();
+	public List<String> neighborList=new ArrayList<String>();
 	
 	//节点的缓存区buffer
-	List<String> labelBuffer=new ArrayList<String>();
+	public List<String> labelBuffer=new ArrayList<String>();
 	
 	public VertexNode()
 	{
