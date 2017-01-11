@@ -61,6 +61,10 @@ public class Analysis {
         MyPrint.print("重叠社区节点---节点属于的社区个数排序： "+communityNumOfNodeBelong);
     }
 
+    /**
+     * 获取非重叠社区的size分布
+     * @param partition
+     */
     private void getNonOverlapCommunitySizeDistribution(Partition partition){
         List<Integer> communitySizeDistribution = new ArrayList<Integer>();
         Map<String,List<String>> communities = partition.getCommunities();
@@ -82,6 +86,10 @@ public class Analysis {
         }
     }
 
+    /**
+     * 获取重叠社区的size分布图
+     * @param overlapPartition
+     */
     private void getCommunitySizeDistribution(OverlapPartition overlapPartition){
         List<Integer> communitySizeDistribution = new ArrayList<Integer>();
         Map<String,List<String>> communities = overlapPartition.getCommunities();

@@ -17,8 +17,8 @@ public class CommunityDetectionEntrance {
 		String startDate = sdf.format(date);
 
 		int whetherRepeat = 0;//网络图中的表示方式，是否有重复边,0：无重复边，1：有重复边 ！！！！！！！！！
-		String networkPath = "D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfDistanceThreshold5.txt";
-		Graph g = new Graph(6,networkPath,whetherRepeat);
+		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\network.dat";
+		Graph g = new Graph(5,networkPath,whetherRepeat);
 
 		//序列化网络图g，主要目的是保存网络图结构，方便后续计算模块度用
 		mySerialization.serializeObject(g,"D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
