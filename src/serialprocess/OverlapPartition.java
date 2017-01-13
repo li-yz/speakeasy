@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * Created by Liyanzhen on 2016/12/28.
- * 重叠社区划分 结果 实体类
+ * 重叠社区划分结果 实体类
  */
 public class OverlapPartition implements Serializable {
     /**

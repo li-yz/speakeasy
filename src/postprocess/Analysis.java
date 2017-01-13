@@ -29,9 +29,9 @@ public class Analysis {
         analysis.getNonOverlapCommunitySizeDistribution(bestNonOverlapPartition);
         analysis.getCommunitySizeDistribution(overlapPartition);
 
-//        Graph g = (Graph)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
-//        double mudularity = CalculateModularity.calculateModularity(g,bestNonOverlapPartition);
-//        MyPrint.print("非重叠情况下，得到的划分结果的模块度："+mudularity);
+        Graph g = (Graph)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
+        double mudularity = CalculateModularity.calculateModularity(g,bestNonOverlapPartition);
+        MyPrint.print("非重叠情况下，得到的划分结果的模块度："+mudularity);
 
         rankNodeCommunities(overlapPartition);
     }
