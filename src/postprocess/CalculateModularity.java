@@ -33,9 +33,10 @@ public class CalculateModularity {
         System.out.println("把网络图的节点名都保存到1个list中，方便遍历，节点总数"+allNodeList.size());
 
         Map<String, String> nodeCommunityMap = partition.getNodeCommunityMap();
-        int Aij = 0;
+
         for(int i=0;i < n;i++){
             for(int j=i+1;j < n;j++){
+                int Aij = 0;
                 VertexNode nodei = g.map.get(allNodeList.get(i));
                 VertexNode nodej = g.map.get(allNodeList.get(j));
                 if(nodei.neighborList.contains(allNodeList.get(j)) ){
@@ -46,12 +47,12 @@ public class CalculateModularity {
 
                 //如果节点i、j属于同一个社区，则对模块度值有一个贡献值
                 if(nodeCommunityMap.get(nodei.vertexName).equals(nodeCommunityMap.get(nodej.vertexName))){
-                    double temp = Aij - ((Ki*Kj)/2*m);
+                    double temp = Aij - ((double)(Ki*Kj)/(2*m));
                     q += temp;
                 }
             }
         }
-        q = q*(1/(2*m));
+        q= q/(2*m);
 
         return q;
     }
