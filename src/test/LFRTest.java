@@ -1,14 +1,18 @@
 package test;
 
+import postprocess.CalculateModularity;
+import postprocess.NMI;
+import serialprocess.Graph;
+import serialprocess.OverlapPartition;
+import serialprocess.Partition;
 import utils.MyOutPut;
+import utils.MyPrint;
+import utils.MySerialization;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Liyanzhen on 2017/1/11.
@@ -16,11 +20,20 @@ import java.util.Map;
 public class LFRTest {
     public static void main(String[] args){
         String realCommunityPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\community.dat";
-        readAndOutPutRealCommunityFromTextFile(realCommunityPath);
+        OverlapPartition truthPartition = readAndOutPutRealCommunityFromTextFile(realCommunityPath);
+        MySerialization mySerialization = new MySerialization();
+        OverlapPartition speakEasyPartition = (OverlapPartition)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
+        compareSpeakEasyResultWithTheTruthOfLFRNetwork(truthPartition,speakEasyPartition);
+
+        //计算一下LFR生成的网络的真实社区结构的模块度！！！！！？？？？？？
+
+        //计算speakeasy的划分结果与standard的NMI
+        NMI.getNMIValue(speakEasyPartition,truthPartition);
     }
 
-    private static void readAndOutPutRealCommunityFromTextFile(String path){
+    private static OverlapPartition readAndOutPutRealCommunityFromTextFile(String path){
+        OverlapPartition trueOverlapPartition = new OverlapPartition();
         Map<String,List<String>> communities=new HashMap<String, List<String>>();
         Map<String,List<String>> overlapNodeMapCommunities = new HashMap<String, List<String>>();
         try {
@@ -32,9 +45,10 @@ public class LFRTest {
             while((line=br.readLine()) != null){
                 String[] array = line.split("\t");
                 String vertexName = array[0];
+                String [] commuArray = array[1].split(" ");
                 //先统计社区划分结果
-                for(int i=1;i < array.length;i++){
-                    String communityName = array[i];
+                for(int i=0;i < commuArray.length;i++){
+                    String communityName = commuArray[i];
                     if(communities.containsKey(communityName)){
                         communities.get(communityName).add(vertexName);
                     }else{
@@ -45,17 +59,20 @@ public class LFRTest {
                 }
 
                 //统计重叠社区节点
-                if(array.length > 2){//说明当前节点是重叠社区节点
-                    for(int i=1;i < array.length;i++){
-                        List<String> list = new ArrayList<String>();
-                        list.add(array[i]);
-                        overlapNodeMapCommunities.put(array[0],list);
+                if(commuArray.length > 1){//说明当前节点是重叠社区节点
+                    List<String> list = new ArrayList<String>();
+                    for(int i=0;i < commuArray.length;i++){
+                        list.add(commuArray[i]);
                     }
+                    overlapNodeMapCommunities.put(vertexName,list);
                 }
             }
 
             br.close();
             fr.close();
+
+            trueOverlapPartition.setCommunities(communities);
+            trueOverlapPartition.setNodeMapCommunities(overlapNodeMapCommunities);
 
             //输出真实社区划分结果、重叠社区节点
             MyOutPut.outputCommunities(communities);
@@ -63,6 +80,39 @@ public class LFRTest {
         }catch (Exception e){
             e.printStackTrace();
         }
+        return trueOverlapPartition;
+    }
+
+    private static void compareSpeakEasyResultWithTheTruthOfLFRNetwork(OverlapPartition truth ,OverlapPartition speakEasyPartition){
+        //先比较speakeasy找到的重叠节点覆盖率
+        Set<String> truthOverlapNodes = new HashSet<String>();
+        Iterator truthIter = truth.getNodeMapCommunities().entrySet().iterator();
+        while(truthIter.hasNext()){
+            Map.Entry entry = (Map.Entry<String,List<String>>) truthIter.next();
+            truthOverlapNodes.add((String)entry.getKey());
+        }
+
+        Set<String> speakeasyOverlapNodes = new HashSet<String>();
+        Iterator speakeasyIter = speakEasyPartition.getNodeMapCommunities().entrySet().iterator();
+        while(speakeasyIter.hasNext()){
+            Map.Entry entry = (Map.Entry<String,List<String>>) speakeasyIter.next();
+            speakeasyOverlapNodes.add((String)entry.getKey());
+        }
+
+        int rnum = 0;
+        for(String v :truthOverlapNodes){
+            if(speakeasyOverlapNodes.contains(v)){
+                rnum++;
+            }
+        }
+        MyPrint.print("真实的重叠节点个数 = "+truthOverlapNodes.size());
+        MyPrint.print("speakeasy得到的重叠节点个数 = "+speakeasyOverlapNodes.size());
+        MyPrint.print("speakeasy算法覆盖到的真实重叠节点个数 = "+rnum +" ,覆盖率 = "+(double)17/20);
+        MyPrint.print("speakeasy找到的非真实的重叠节点个数 = "+(speakeasyOverlapNodes.size()-rnum));
+        //重叠节点比较 完
+
+        //下面利用 归一化互信息指标来比较speakeasy得到的划分结果与真实划分结果
+
 
     }
 }
