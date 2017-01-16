@@ -29,7 +29,10 @@ public class LFRTest {
         //计算一下LFR生成的网络的真实社区结构的模块度！！！！！？？？？？？
 
         //计算speakeasy的划分结果与standard的NMI
-        NMI.getNMIValue(speakEasyPartition,truthPartition);
+        int n=0;//总的节点数
+        Graph g = (Graph)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
+        n=g.map.size();
+        NMI.getNMIValue(speakEasyPartition,truthPartition,n);
     }
 
     private static OverlapPartition readAndOutPutRealCommunityFromTextFile(String path){
