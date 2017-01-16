@@ -8,9 +8,8 @@ import java.util.Map;
 /**
  * Created by Liyanzhen on 2016/12/23.
  */
-public class Partition implements Serializable {
-    //communities与nodeCommunityMap可以表示一个社区划分
-    Map<String, List<String>> communities=new HashMap<String, List<String>>();
+public class Partition extends BasePartition implements Serializable {
+    //基类的communities与nodeCommunityMap可以表示一个社区划分
     Map<String, String> nodeCommunityMap=new HashMap<String, String>();
 
     public Map<String, List<String>> getCommunities() {
