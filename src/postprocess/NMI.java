@@ -1,5 +1,6 @@
 package postprocess;
 
+import serialprocess.BasePartition;
 import serialprocess.Graph;
 import serialprocess.OverlapPartition;
 import utils.MyPrint;
@@ -14,12 +15,14 @@ import java.util.*;
  * Created by Liyanzhen on 2017/1/13.
  */
 public class NMI {
-    public static double getNMIValue(OverlapPartition speakPartition, OverlapPartition realPartition){
-        int n=0;//总的节点数
-        MySerialization mySerialization = new MySerialization();
-        Graph g = (Graph)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
-        n=g.map.size();
-
+    /**
+     * 计算两个社区划分的NMI，NMI表示两个划分的相似度
+     * @param speakPartition
+     * @param realPartition
+     * @param n 网络图中节点总数
+     * @return
+     */
+    public static double getNMIValue(BasePartition speakPartition, BasePartition realPartition,int n){
         double nmi = 0.0d;
         double mi = getMIValue(speakPartition,realPartition,n);
         double Hw = getEntropyH(speakPartition,n);
@@ -38,7 +41,7 @@ public class NMI {
      * @param n 节点总数
      * @return
      */
-    private static double getMIValue(OverlapPartition speakPartition, OverlapPartition realPartition,int n){
+    private static double getMIValue(BasePartition speakPartition, BasePartition realPartition,int n){
         double mi = 0.0d;
         //计算互信息
 
@@ -62,7 +65,7 @@ public class NMI {
         return mi;
     }
 
-    private static double getEntropyH(OverlapPartition partition,int n){
+    private static double getEntropyH(BasePartition partition,int n){
         double h=0.0d;
         Iterator iter = partition.getCommunities().entrySet().iterator();
         while(iter.hasNext()){
