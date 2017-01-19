@@ -29,8 +29,8 @@ public class NMI {
         double Hc = getEntropyH(realPartition,n);
 
         nmi = (2*mi)/(Hw+Hc);
-        MyPrint.print("互信息MI值= "+mi+"Hw = "+Hw+"Hc = "+Hc);
-        MyPrint.print("归一化互信息 NMI = "+nmi);
+//        MyPrint.print("互信息MI值= "+mi+"Hw = "+Hw+"Hc = "+Hc);
+//        MyPrint.print("归一化互信息 NMI = "+nmi);
         return nmi;
     }
 
