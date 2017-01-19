@@ -1,5 +1,7 @@
 package serialprocess;
 
+import utils.MyOutPut;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +19,9 @@ public class DetermineOverlapNodes {
      */
 	public static void determine(Map<String, List<String>> bestPartitionCommunities,Map<String, String> bestPartitionNodeMapCommu,List<String> allNodeList,CooccurMatrix a,double r,Map<String, List<String>> nodeMapCommunities){
 		//determine the overlapping nodes
-		
+
+		StringBuffer sb = new StringBuffer();
+
 		for(int i=0;i < allNodeList.size();i++){
 			Iterator finIter=bestPartitionCommunities.entrySet().iterator();
 			while(finIter.hasNext()){
@@ -42,6 +46,12 @@ public class DetermineOverlapNodes {
 					}
 					double temp2=0.0d;
 					temp2=(double)temp1/(nodeInCList.size()*10);
+
+					//保存所有大于0的temp2的值，即Wv,c的值,了解其分布，以便选择合适的阈值
+					if(temp2 > 0) {
+						sb.append(temp2 + " ");
+					}
+
 					if (temp2 > r){//大于阈值，即节点v是重叠节点，属于当前社区c
 //						System.out.println("temp2 > r,节点v: "+vnodeName+" 也属于社区： "+commuName);
 						if(nodeMapCommunities.containsKey(vnodeName)){
@@ -76,5 +86,9 @@ public class DetermineOverlapNodes {
 			nodeMapCommunities.put(nodeName, list);
 		}
 
+
+		//保存sb,即每个节点Wv,c的分布
+		MyOutPut.saveStringResultToTxt(sb.toString(),"D:\\paperdata\\soybean\\community detection\\筛选重叠节点Wv,c分布\\Wvc.txt");
 	}
+
 }
