@@ -3,6 +3,8 @@ package postprocess;
 import serialprocess.Graph;
 import serialprocess.Partition;
 import serialprocess.VertexNode;
+import utils.MyPrint;
+import utils.MySerialization;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,6 +17,9 @@ import java.util.Map;
  * Created by Liyanzhen on 2017/1/10.
  */
 public class CalculateModularity {
+
+
+
     public static double calculateModularity(Graph g, Partition partition){
         double q = 0.0d;
         int m = g.totalEdgesList.size();//网络图g中的总边数
@@ -30,7 +35,7 @@ public class CalculateModularity {
             String node=(String)entry.getKey();
             allNodeList.add(node);
         }
-        System.out.println("把网络图的节点名都保存到1个list中，方便遍历，节点总数"+allNodeList.size());
+//        System.out.println("把网络图的节点名都保存到1个list中，方便遍历，节点总数"+allNodeList.size());
 
         Map<String, String> nodeCommunityMap = partition.getNodeCommunityMap();
 
