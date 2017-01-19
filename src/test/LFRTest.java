@@ -1,10 +1,8 @@
 package test;
 
-import postprocess.CalculateModularity;
 import postprocess.NMI;
 import serialprocess.Graph;
 import serialprocess.OverlapPartition;
-import serialprocess.Partition;
 import utils.MyOutPut;
 import utils.MyPrint;
 import utils.MySerialization;
@@ -22,7 +20,7 @@ public class LFRTest {
         String realCommunityPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\community.dat";
         OverlapPartition truthPartition = readAndOutPutRealCommunityFromTextFile(realCommunityPath);
         MySerialization mySerialization = new MySerialization();
-        OverlapPartition speakEasyPartition = (OverlapPartition)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
+        OverlapPartition speakEasyPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
         compareSpeakEasyResultWithTheTruthOfLFRNetwork(truthPartition,speakEasyPartition);
 
@@ -30,12 +28,28 @@ public class LFRTest {
 
         //计算speakeasy的划分结果与standard的NMI
         int n=0;//总的节点数
-        Graph g = (Graph)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
+        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
         n=g.map.size();
-        NMI.getNMIValue(speakEasyPartition,truthPartition,n);
+        double nmi1 = NMI.getNMIValue(speakEasyPartition,truthPartition,n);
+        MyPrint.print("speakeasy结果与真实结果的nmi值 = "+nmi1);
+
+        //计算GANXiSw 的划分结果与真实结果的模块度
+        String GANXisWCommunitiesPath = "E:\\毕业论文\\GANXiS_v3.0.2\\GANXiS_v3.0.2\\output\\LFRnetwork\\SLPAw_LFRnetwork_run1_r0.05_v3_T50.icpm";
+        String GANXiSwOverlapNodesPath = "E:\\毕业论文\\GANXiS_v3.0.2\\GANXiS_v3.0.2\\output\\LFRnetwork\\SLPAw_LFRnetwork_run1_r0.05_v3_T50.icpm.ovnodes.txt";
+//        Partition GANXiSwPartition = AnalysisGANXiSwResult.readCommunities(GANXisWCommunitiesPath);//非重叠的情况
+
+        OverlapPartition GANXiSwPartition = AnalysisGANXiSwResult.readOverlapPartition(GANXisWCommunitiesPath,GANXiSwOverlapNodesPath);
+        double nmi2 = NMI.getNMIValue(GANXiSwPartition,truthPartition,n);
+        MyPrint.print("GANXiSw结果与真实结果的nmi值 = "+nmi2);
+        compareSpeakEasyResultWithTheTruthOfLFRNetwork(truthPartition,GANXiSwPartition);
     }
 
-    private static OverlapPartition readAndOutPutRealCommunityFromTextFile(String path){
+    /**
+     * 读取LFR benchmark网络的真实社区划分
+     * @param path
+     * @return
+     */
+    public static OverlapPartition readAndOutPutRealCommunityFromTextFile(String path){
         OverlapPartition trueOverlapPartition = new OverlapPartition();
         Map<String,List<String>> communities=new HashMap<String, List<String>>();
         Map<String,List<String>> overlapNodeMapCommunities = new HashMap<String, List<String>>();

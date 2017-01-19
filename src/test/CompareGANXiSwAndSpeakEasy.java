@@ -7,9 +7,6 @@ import serialprocess.Partition;
 import utils.MyPrint;
 import utils.MySerialization;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * 选定某一数据集（例如karate数据集），对比GANXiSw与speakeasy的社区发现效果
  * Created by Liyanzhen on 2017/1/16.
@@ -25,9 +22,9 @@ public class CompareGANXiSwAndSpeakEasy {
     //计算两种算法 得到的结果的模块度
     public static void compareModularity(){
         MySerialization mySerialization = new MySerialization();
-        Partition bestNonOverlapPartition = (Partition) mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
 
-        Graph g = (Graph)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
+        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
         double mudularity = CalculateModularity.calculateModularity(g,bestNonOverlapPartition);
         MyPrint.print("karate数据集，非重叠情况下，speakeasy得到的划分结果的模块度："+mudularity);
 
@@ -42,9 +39,9 @@ public class CompareGANXiSwAndSpeakEasy {
      */
     public static void getNMIOfTwoPartition(){
         MySerialization mySerialization = new MySerialization();
-        Partition bestNonOverlapPartition = (Partition) mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
 
-        Graph g = (Graph)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
+        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
         int n=g.map.size();
 
         String GANXiSwResultPath = "C:\\Users\\Liyanzhen\\Desktop\\对比GANXiSw算法与 speakeasy算法\\GANXiSw跑karate数据集No2.txt";

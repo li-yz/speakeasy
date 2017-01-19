@@ -17,11 +17,13 @@ public class CommunityDetectionEntrance {
 		String startDate = sdf.format(date);
 
 		int whetherRepeat = 0;//网络图中的表示方式，是否有重复边,0：无重复边，1：有重复边 ！！！！！！！！！
-		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\network.dat";
+//		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\network.dat";//LFR benchMark网络
+//		String networkPath = "D:\\paperdata\\test network\\karate\\network source-target.txt";//karate 空手道俱乐部数据集
+		String networkPath ="D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfDistanceThreshold5.txt";
 		Graph g = new Graph(5,networkPath,whetherRepeat);
 
 		//序列化网络图g，主要目的是保存网络图结构，方便后续计算模块度用
-		mySerialization.serializeObject(g,"D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
+		MySerialization.serializeObject(g,"D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
 
 		//保存所有节点，便于循环遍历所有节点
 		List<String> allNodeList=new ArrayList<String>();
@@ -38,15 +40,6 @@ public class CommunityDetectionEntrance {
 		ResultOutput tempRo=new ResultOutput();
 
 		List<Partition> partitionList=new ArrayList<Partition>();
-
-		//共生矩阵A的对象表示
-		CooccurMatrix a=new CooccurMatrix();
-
-		//节点：其所属的多个社区 ，保存找到的重叠社区节点结果
-		Map<String, List<String>> nodeMapCommunities=new HashMap<String, List<String>>();
-
-		Map<String, List<String>> bestPartitionCommunities;
-		Map<String, String> bestPartitionNodeMapCommu;
 
 		GraphSearch communityDetect=new GraphSearch();
 		System.out.println("开始重复迭代聚类");
@@ -73,6 +66,7 @@ public class CommunityDetectionEntrance {
 
 		System.out.println("得到的划分个数"+partitionList.size());
 
+		//保存多次运行得到的划分结果partitionList，文本形式 + 序列化形式
 		try {
 			tempRo.outPutNodeMapCommunityTemp(partitionList);
 			tempRo.outputTempCommunities(partitionList);
@@ -80,17 +74,27 @@ public class CommunityDetectionEntrance {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		MySerialization.serializeObject(partitionList,"D:\\paperdata\\soybean\\community detection\\partitionList\\partitionList.obj");
+		MySerialization.serializeObject(allNodeList,"D:\\paperdata\\soybean\\community detection\\allNodeList\\allNodeList.obj");
 
 		//将网络图的对象引用置为空，when GC work，free this memory
 		g=null;
 
 
+
 		System.out.println("一致化聚类开始");
+		//共生矩阵A的对象表示
+		CooccurMatrix a=new CooccurMatrix();
+		//节点：其所属的多个社区 ，保存找到的重叠社区节点结果
+		Map<String, List<String>> nodeMapCommunities=new HashMap<String, List<String>>();
+
+		Map<String, List<String>> bestPartitionCommunities;
+		Map<String, String> bestPartitionNodeMapCommu;
 
 		System.out.println("计算共生矩阵");
 		//遍历所有的划分结果，计算共生矩阵
 		for(int partiIndex=0;partiIndex < 10;partiIndex++){
-			serialprocess.Partition partition=partitionList.get(partiIndex);
+			Partition partition=partitionList.get(partiIndex);
 
 			for(int uIndex=0;uIndex <allNodeList.size();uIndex++){
 				String unode=allNodeList.get(uIndex);
@@ -151,11 +155,11 @@ public class CommunityDetectionEntrance {
 		Partition bestPartition = partitionList.get(index);
 
 		//将非重叠的 最优划分结果序列化保存
-		mySerialization.serializeObject(bestPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+		MySerialization.serializeObject(bestPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
 
 		bestPartitionCommunities=partitionList.get(index).communities;
 		bestPartitionNodeMapCommu=partitionList.get(index).nodeCommunityMap;
-		// select the max community from the bestPartitionCommunities,get r value
+		// select the max number of communities from all partitions,get r value
 		int maxCommuNum=0;
 		int tsize=0;
 
@@ -165,7 +169,11 @@ public class CommunityDetectionEntrance {
 				maxCommuNum=tsize;
 		}
 
-		double r=(double)1/maxCommuNum;
+		double r=(double)1/maxCommuNum;//论文中作者提到 r可以这么设定，特别是在生物网络中
+
+		r = 0.56;//阈值r的值是可以适当调整的，r越大 得到的重叠节点就越少,取Wvc的均值
+
+		MyPrint.print("筛选重叠社区节点的阈值r = "+r);
 
 		//determine the overlapping nodes
 		System.out.println("开始识别重叠社区节点");
@@ -192,47 +200,12 @@ public class CommunityDetectionEntrance {
 			e.printStackTrace();
 		}
 
-		//粗略统计社区的大小分布情况
-		int numOf2_3=0,numOf4_5=0,numOf6_9=0,numOf10_15=0,numOf16_25=0,numOf26_35=0,numOf36_50=0,numOf50_OO=0;
-		Iterator bestIter = bestPartitionCommunities.entrySet().iterator();
-		while(bestIter.hasNext()){
-			Map.Entry entry = (Map.Entry<String,List<String>>) bestIter.next();
-			String key =(String) entry.getKey();
-			List<String> list = (List<String>) entry.getValue();
-			int size = list.size();
-			if(size >=2 && size <=3){
-				numOf2_3++;
-			}else if(size >=4 && size <=5){
-				numOf4_5++;
-			}else if(size >=6 && size <=9){
-				numOf6_9++;
-			}else if(size >=10 && size <=15){
-				numOf10_15++;
-			}else if(size >=16 && size <=25){
-				numOf16_25++;
-			}else if(size >=26 && size <=35){
-				numOf26_35++;
-			}else if(size >=36 && size <=50){
-				numOf36_50++;
-			}else if(size > 50){
-				numOf50_OO++;
-			}
-		}
-		MyPrint.print("社区大小[2,3]的有： "+numOf2_3+" 个");
-		MyPrint.print("社区大小[4,5]的有： "+numOf4_5+" 个");
-		MyPrint.print("社区大小[6,9]的有： "+numOf6_9+" 个");
-		MyPrint.print("社区大小[10,15]的有： "+numOf10_15+" 个");
-		MyPrint.print("社区大小[16,25]的有： "+numOf16_25+" 个");
-		MyPrint.print("社区大小[26,35]的有： "+numOf26_35+" 个");
-		MyPrint.print("社区大小[36,50]的有： "+numOf36_50+" 个");
-		MyPrint.print("社区大小[50,+∞]的有： "+numOf50_OO+" 个");
-
 		//将重叠社区划分结果保存到OverlapPartition对象中，便于序列化，后续可以直接反序列化，针对社区发现结果进行分析
 		OverlapPartition overlapPartition = new OverlapPartition();
 		overlapPartition.setCommunities(bestPartitionCommunities);
 		overlapPartition.setNodeMapCommunities(nodeMapCommunities);
 
-		mySerialization.serializeObject(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
+		MySerialization.serializeObject(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
 	}//main
 

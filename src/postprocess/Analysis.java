@@ -20,8 +20,8 @@ public class Analysis {
     public static void main(String[] args){
         Analysis analysis = new Analysis();
         MySerialization mySerialization = new MySerialization();
-        Partition bestNonOverlapPartition = (Partition) mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
-        OverlapPartition overlapPartition = (OverlapPartition)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
+        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+        OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
         MyPrint.print("非重叠社区个数： "+bestNonOverlapPartition.getCommunities().size());
         MyPrint.print("重叠社区个数： "+overlapPartition.getCommunities().size());
@@ -29,7 +29,7 @@ public class Analysis {
         analysis.getNonOverlapCommunitySizeDistribution(bestNonOverlapPartition);
         analysis.getCommunitySizeDistribution(overlapPartition);
 
-        Graph g = (Graph)mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
+        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
         double mudularity = CalculateModularity.calculateModularity(g,bestNonOverlapPartition);
         MyPrint.print("非重叠情况下，得到的划分结果的模块度："+mudularity);
 
@@ -123,9 +123,9 @@ public class Analysis {
         overlapPartition.setCommunities(communities);
 
         MySerialization mySerialization = new MySerialization();
-        mySerialization.serializeObject(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\test.obj");
+        MySerialization.serializeObject(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\test.obj");
 
-        OverlapPartition testObject = (OverlapPartition) mySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\test.obj");
+        OverlapPartition testObject = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\test.obj");
 
         MyPrint.print("反序列化： "+testObject.getCommunities().get("first").get(0));
     }
