@@ -56,4 +56,20 @@ public class MyOutPut {
         bw.close();
         writer.close();
     }
+
+    //保存筛选重叠社区节点时的 每一个节点的平均权值分布
+    public static void saveStringResultToTxt(String result,String path){
+        try{
+            FileWriter writer = new FileWriter(path);
+            BufferedWriter bw = new BufferedWriter(writer);
+
+            bw.write(result);
+            bw.newLine();
+
+            bw.close();
+            writer.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
