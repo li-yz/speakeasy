@@ -58,7 +58,7 @@ public class AnalysisGANXiSwResult {
             br.close();
             fr.close();
 
-            MyPrint.print("GANXiSw处理大豆基因网络得到的社区size分布："+sb.toString());
+//            MyPrint.print("GANXiSw处理大豆基因网络得到的社区size分布："+sb.toString());
         }catch (Exception e){
             e.printStackTrace();
         }

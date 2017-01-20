@@ -19,7 +19,9 @@ public class CommunityDetectionEntrance {
 		int whetherRepeat = 0;//网络图中的表示方式，是否有重复边,0：无重复边，1：有重复边 ！！！！！！！！！
 //		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\network.dat";//LFR benchMark网络
 //		String networkPath = "D:\\paperdata\\test network\\karate\\network source-target.txt";//karate 空手道俱乐部数据集
-		String networkPath ="D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfDistanceThreshold5.txt";
+//		String networkPath ="D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfDistanceThreshold5.txt";
+//		String networkPath = "D:\\paperdata\\test network\\pol.books\\pol.books.txt";
+		String networkPath = "D:\\paperdata\\test network\\dolphin\\dolphin.txt";
 		Graph g = new Graph(5,networkPath,whetherRepeat);
 
 		//序列化网络图g，主要目的是保存网络图结构，方便后续计算模块度用
