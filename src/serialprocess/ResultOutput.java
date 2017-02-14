@@ -61,11 +61,18 @@ public class ResultOutput {
 			List<String> nodesList=partition.get(communityTag);
 			StringBuffer sb=new StringBuffer();
 			
-			sb.append("社区标志："+communityTag+"的社区内：");
-			sb.append(nodesList);
-			
+			sb.append("社区标志： "+communityTag+" ,节点个数："+nodesList.size());
+			bw.write(sb.toString());
+
+			for(String node: nodesList){
+				bw.newLine();
+				bw.write(node);
+			}
+			sb = new StringBuffer();
+			sb.append("------------------------------------------");
 			bw.newLine();
 			bw.write(sb.toString());
+			bw.newLine();
 		}
 		bw.close();
 		writer.close();
@@ -73,8 +80,10 @@ public class ResultOutput {
 	
 	//输出重叠节点
 	public void outputOverLapNodes(Map<String, List<String>> nodeAndCommunities) throws IOException{
-		FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapNodes.txt");
+		FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\最终结果\\nodeMapCommunities.txt");
 		BufferedWriter bw = new BufferedWriter(writer);
+		FileWriter writer2 = new FileWriter("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapNodes.txt");
+		BufferedWriter bw2 = new BufferedWriter(writer2);
       
 		Iterator it=nodeAndCommunities.entrySet().iterator();
 		while(it.hasNext()){
@@ -90,9 +99,14 @@ public class ResultOutput {
 			
 			bw.newLine();
 			bw.write(sb.toString());
+
+			bw2.write(nodeName);
+			bw2.newLine();
 		}
 		bw.close();
 		writer.close();
+		bw2.close();
+		writer2.close();
 	}
 	
 	//输出10个社区划分的中间结果
