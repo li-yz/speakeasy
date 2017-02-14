@@ -19,7 +19,6 @@ import java.util.*;
 public class Analysis {
     public static void main(String[] args){
         Analysis analysis = new Analysis();
-        MySerialization mySerialization = new MySerialization();
         Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
         OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 

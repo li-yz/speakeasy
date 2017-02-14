@@ -76,8 +76,8 @@ public class Graph implements Serializable{
 				System.out.println("开始读取文件 ：");
 				while((readrow=bf.readLine()) != null){
 					
-//					String []str=readrow.split("\t");
-					String []str=readrow.split(" ");
+					String []str=readrow.split("\t");
+//					String []str=readrow.split(" ");
 					VertexNode from=new VertexNode(str[0]);
 					VertexNode to=new VertexNode(str[1]);
 						Edges newEdge=new Edges(from, to);
