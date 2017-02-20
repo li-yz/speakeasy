@@ -88,7 +88,7 @@ public class DetermineOverlapNodes {
 
 
 		//保存sb,即每个节点Wv,c的分布
-		MyOutPut.saveStringResultToTxt(sb.toString(),"D:\\paperdata\\soybean\\community detection\\筛选重叠节点Wv,c分布\\Wvc.txt");
+//		MyOutPut.saveStringResultToTxt(sb.toString(),"D:\\paperdata\\soybean\\community detection\\筛选重叠节点Wv,c分布\\Wvc.txt");
 	}
 
 }
