@@ -3,12 +3,11 @@ package postprocess;
 import serialprocess.Graph;
 import serialprocess.OverlapPartition;
 import serialprocess.Partition;
-import utils.MyPrint;
-import utils.MySerialization;
-import utils.MyUtils;
+import utils.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -150,6 +149,12 @@ public class AnalysisCommunitiesDistribution {
         }
     }
 
+    /**
+     * 保存overlapPartition 中有意义的重叠社区以及有意义的“独立的”社区
+     * @param overlapPartition
+     * @param meaningfullOverlapCommuNames
+     * @param meaningfulSeperateCommuNames
+     */
     private static void saveMeaningfulComuunities(OverlapPartition overlapPartition,Set<String> meaningfullOverlapCommuNames,Set<String>meaningfulSeperateCommuNames){
         try {
             FileWriter writer1 = new FileWriter("D:\\paperdata\\soybean\\community detection\\community analysis\\meaningfulSeperateResult.txt");
@@ -219,6 +224,12 @@ public class AnalysisCommunitiesDistribution {
             e.printStackTrace();
         }
     }
+
+    /**
+     * txt保存全部的重叠社区
+     * @param overlapPartition
+     * @param totalOverlapTagSet
+     */
     private static void saveTotalOverlapCommunities(OverlapPartition overlapPartition,Set<String> totalOverlapTagSet){
         try {
             FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\community analysis\\totalOverlapCommunitiesResult.txt");
@@ -252,6 +263,13 @@ public class AnalysisCommunitiesDistribution {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 求两个集合的交集
+     * @param totalSeperateCommuNames
+     * @param totalOverlapCommuNames
+     * @return 交集
+     */
     private static Set<String> getInterSectionOf2Set(Set<String>totalSeperateCommuNames,Set<String>totalOverlapCommuNames){
         Set<String> result = new HashSet<String>();
 
@@ -259,5 +277,70 @@ public class AnalysisCommunitiesDistribution {
         result.addAll(totalSeperateCommuNames);
         result.retainAll(totalOverlapCommuNames);
         return result;
+    }
+
+    /**
+     * 获取非重叠社区的size分布
+     * @param partition
+     */
+    private void findNonOverlapCommunitySizeDistribution(Partition partition){
+        List<Integer> communitySizeDistribution = new ArrayList<Integer>();
+        Map<String,List<String>> communities = partition.getCommunities();
+        Iterator iterator = communities.entrySet().iterator();
+        while(iterator.hasNext()){
+            Map.Entry entry = (Map.Entry<String,List<String>>)iterator.next();
+            int size = ((List<String>)entry.getValue()).size();
+
+            communitySizeDistribution.add(size);
+        }
+        int cnum = communitySizeDistribution.size();
+        int[] nonoverlapCommunitiesArray = new int[cnum];
+        int i=0;
+        for(int size:communitySizeDistribution){
+            nonoverlapCommunitiesArray[i++] = size;
+        }
+        MySerialization.serializeObject(nonoverlapCommunitiesArray,"D:\\paperdata\\soybean\\community detection\\community analysis\\nonoverlapCommunitiesSizeArray.obj");
+    }
+
+    /**
+     * 返回非重叠社区划分的社区size分布
+     * @return
+     */
+    public int[] getNonoverlapCommunitiesSizeArray(){
+        return (int[])MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\community analysis\\nonoverlapCommunitiesSizeArray.obj");
+    }
+
+    /**
+     * 找重叠社区的size分布图
+     * @param overlapPartition
+     */
+    private void findCommunitySizeDistribution(OverlapPartition overlapPartition){
+        int[] sizeArray = new int[overlapPartition.getCommunities().size()];
+        Map<String,List<String>> communities = overlapPartition.getCommunities();
+        Iterator iterator = communities.entrySet().iterator();
+        int i=0;
+        while(iterator.hasNext()){
+            Map.Entry entry = (Map.Entry<String,List<String>>)iterator.next();
+            int size = ((List<String>)entry.getValue()).size();
+
+            sizeArray[i++]=size;
+        }
+        MySerialization.serializeObject(sizeArray,"D:\\paperdata\\soybean\\community detection\\community analysis\\overlapCommunitiesSizeArray.obj");
+    }
+
+    /**
+     * 返回重叠社区划分的社区size分布
+     * @return
+     */
+    public int[] getOverlapCommunitiesSizeArray(){
+        return (int[])MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\community analysis\\overlapCommunitiesSizeArray.obj");
+    }
+
+    /**
+     * “真正的”重叠社区，两两之间的交集大小
+     * @return
+     */
+    public int[][] getTrueOverlapCommunitiesIntersection(){
+        return (int[][])MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\community analysis\\trueOverlapCommunitiesIntersection.obj");
     }
 }
