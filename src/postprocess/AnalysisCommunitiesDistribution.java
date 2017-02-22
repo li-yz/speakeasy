@@ -18,8 +18,8 @@ public class AnalysisCommunitiesDistribution {
     public static void main(String[] args){
         //反序列化之前保存的网络图G、最优非重叠划分、重叠划分结果
 //        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
-        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
-        OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
+        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.2.18\\bestNonOverlapPartition.obj");
+        OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.2.18\\overlapPartition.obj");
 
         MyPrint.print("非重叠社区个数： "+bestNonOverlapPartition.getCommunities().size());
         MyPrint.print("重叠社区个数： "+overlapPartition.getCommunities().size());
@@ -102,10 +102,53 @@ public class AnalysisCommunitiesDistribution {
 
 
         //将有意义的重叠社区、 有意义的独立社区按格式打印到文本文件中
-        saveMeaningfulComuunities(overlapPartition,meaningfullOverlapCommuNames,meaningfulSeparateCommuNames);
-        saveTotalOverlapCommunities(overlapPartition,totalOverlapTagSet);
+//        saveMeaningfulComuunities(overlapPartition,meaningfullOverlapCommuNames,meaningfulSeparateCommuNames);
+//        saveTotalOverlapCommunities(overlapPartition,totalOverlapTagSet);
+        findTheSourceOfNewBigOverlapNodes(overlapPartition,totalOverlapTagSet);
+        findIneractionBetweenTwoverlapCommunities(overlapPartition,totalOverlapTagSet);
     }
 
+    /**
+     * 判断原来只有一个节点的社区在 吸收了很多节点之后而成大重叠社区，看这些被吸收的节点来自哪里
+     * @param overlapPartition
+     * @param totalOverlapTagSet
+     */
+    private static void findTheSourceOfNewBigOverlapNodes(OverlapPartition overlapPartition,Set<String>totalOverlapTagSet){
+        List<String> newBigOverlapCommunity = overlapPartition.getCommunities().get("Gma.1043.2.S1_at");
+        for(String tag :totalOverlapTagSet){
+            List<String> nodes = overlapPartition.getCommunities().get(tag);
+            int num = 0;
+            for(String node :nodes){
+                if(newBigOverlapCommunity.contains(node)){
+                    num++;
+
+                }
+            }
+            if(num > 0 && !"Gma.1043.2.S1_at".equals(tag)){
+                MyPrint.print("1297个节点的大社区Gma.1043.2.S1_at包含社区 "+tag+"中的 "+num+" 个节点");
+            }
+        }
+    }
+
+    private static void findIneractionBetweenTwoverlapCommunities(OverlapPartition overlapPartition,Set<String>totalOverlapTagSet){
+        List<String>totalOverlapCommunityNames = new ArrayList<String>();
+        totalOverlapCommunityNames.addAll(totalOverlapTagSet);
+        for(int i=0;i < totalOverlapCommunityNames.size();i++){
+            List<String> nodesOfCommunityI = overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(i));
+            Set<String> setI = new HashSet<String>();
+            setI.addAll(nodesOfCommunityI);
+            for(int j=i+1;j < totalOverlapCommunityNames.size();j++){
+                List<String> nodesOfCommunityJ = overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(j));
+                Set<String> setJ = new HashSet<String>();
+                setJ.addAll(nodesOfCommunityJ);
+
+                Set<String> interactionOfCommunityIAndJ = getInterSectionOf2Set(setI,setJ);
+                if(interactionOfCommunityIAndJ.size() > 0) {
+                    MyPrint.print("社区标志" + totalOverlapCommunityNames.get(i) + " 与社区标志" + totalOverlapCommunityNames.get(j) + " 之间的重叠节点个数=" + interactionOfCommunityIAndJ.size());
+                }
+            }
+        }
+    }
 
     private static void saveMeaningfulComuunities(OverlapPartition overlapPartition,Set<String> meaningfullOverlapCommuNames,Set<String>meaningfulSeperateCommuNames){
         try {
