@@ -1,6 +1,10 @@
 package utils;
 
+import postprocess.AnalysisCommunitiesDistribution;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,6 +16,9 @@ public class MathTest {
         test();
         String str = "1 2 3 4";
         MyOutPut.saveStringResultToTxt(str,"D:\\paperdata\\soybean\\community detection\\筛选重叠节点Wv,c分布\\test.txt");
+        AnalysisCommunitiesDistribution obj = new AnalysisCommunitiesDistribution();
+        String[] strs =obj.getTrueOverlapCommunitiesNames();
+        int[][]m = obj.getTrueOverlapCommunitiesIntersectionMatrix();
     }
     private static void test(){
         Set<Integer> result = new HashSet<Integer>();

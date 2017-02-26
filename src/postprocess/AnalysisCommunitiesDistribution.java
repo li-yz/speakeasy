@@ -23,6 +23,8 @@ public class AnalysisCommunitiesDistribution {
         MyPrint.print("非重叠社区个数： "+bestNonOverlapPartition.getCommunities().size());
         MyPrint.print("重叠社区个数： "+overlapPartition.getCommunities().size());
 
+        findNonOverlapCommunitySizeDistribution(bestNonOverlapPartition);
+        findOverlapCommunitySizeDistribution(overlapPartition);
         compare1(bestNonOverlapPartition,overlapPartition);
 
 
@@ -37,7 +39,6 @@ public class AnalysisCommunitiesDistribution {
         }
         Set<String> totalSeperateCommuNames = new HashSet<String>();
         Set<String> meaningfulSeparateCommuNames = new HashSet<String>();
-        int meaningfulSeperateCommuNum = 0;
         Set<String> meaningfullOverlapCommuNames = new HashSet<String>();
         Set<String> totalOverlapTagSet = new HashSet<String>();
         for(String commuName :comNames){
@@ -47,8 +48,7 @@ public class AnalysisCommunitiesDistribution {
                 //该社区中没有划入重叠节点, 该社区可能是独立的社区，先统计了
                 totalSeperateCommuNames.add(commuName);
 
-                if(nonOverlapCommu.size() > 7){ //如果独立的社区内的基因数大于7，则该“独立”社区也具有一定的生物学意义，值得分析
-                    meaningfulSeperateCommuNum++;
+                if(nonOverlapCommu.size() >= 10){ //如果独立的社区内的基因数大于7，则该“独立”社区也具有一定的生物学意义，值得分析
                     meaningfulSeparateCommuNames.add(commuName);
                 }
             }else{
@@ -59,7 +59,7 @@ public class AnalysisCommunitiesDistribution {
                 MyPrint.print("社区标志"+commuName+" 的社区 吸入重叠节点："+(overlapCommu.size()-nonOverlapCommu.size())+"个");
                 MyPrint.print("社区标志"+commuName+"非重叠时大小="+nonOverlapCommu.size()+"; 重叠下大小="+overlapCommu.size());
                 MyPrint.print("---------------------------------------");
-                if(nonOverlapCommu.size() > 5 && overlapCommu.size() > 7){//若吸入节点之前 commuName的社区大小 > 5，吸入节点之后名为commuName的重叠社区大小 > 7，则认为该commuName对应的社区是有意义的
+                if( overlapCommu.size() >= 10){//若吸入节点之前 commuName的社区大小 > 5，吸入节点之后名为commuName的重叠社区大小 > 7，则认为该commuName对应的社区是有意义的
                     meaningfullOverlapCommuNames.add(commuName);
                 }
 
@@ -72,7 +72,7 @@ public class AnalysisCommunitiesDistribution {
                     //遍历节点node所属的多个社区，筛选出不属于当前社区commuName的 社区大小 > 7的社区
                     for(String tag: commuTags){
                         if(!tag.equals(commuName)){//即该tag的社区不是当前社区，
-                            if(bestNonOverlapPartition.getCommunities().get(tag).size() > 7) {//且大小 > 7，该社区是有意义的重叠社区之一
+                            if(bestNonOverlapPartition.getCommunities().get(tag).size() >= 10) {//且大小 > 7，该社区是有意义的重叠社区之一
                                 meaningfullOverlapCommuNames.add(tag);
                             }
                             totalOverlapTagSet.add(tag);
@@ -82,11 +82,7 @@ public class AnalysisCommunitiesDistribution {
                 }
             }
         }
-        MyPrint.print("总的重叠社区个数 = "+totalOverlapTagSet.size()+"；其中 "+meaningfullOverlapCommuNames.size()+"个有意义");
-        MyPrint.print("有意义的重叠社区，社区名如下--------------------------");
-        for(String e :meaningfullOverlapCommuNames){
-            MyPrint.print(e);
-        }
+
         MyPrint.print("-----------------------------");
         //此时找到的totalSeperateCommuNames 与 totalOverlapTagSet可能存在交集，交集中的社区名应该是重叠的，因此要找到交集，这些交集不再是独立社区了，因此要从totalSeperateCommuNames与meaningfulSeperateCommuNum中移除交集元素
         Set<String> intersection = getInterSectionOf2Set(totalSeperateCommuNames,totalOverlapTagSet);
@@ -97,14 +93,22 @@ public class AnalysisCommunitiesDistribution {
 
 
         MyPrint.print("独立社区 总数 = "+totalSeperateCommuNames.size());
-        MyPrint.print("有意义的独立社区：“独立的”且所包含的基因个数 > 7的社区 "+meaningfulSeperateCommuNum+" 个");
+        MyPrint.print("有意义的独立社区：“独立的”且所包含的基因个数 >= 10的社区 "+meaningfulSeparateCommuNames.size()+" 个");
+
+        MyPrint.print("-----------------------------");
+        MyPrint.print("总的重叠社区个数 = "+totalOverlapTagSet.size()+"；其中 "+meaningfullOverlapCommuNames.size()+"个有意义");
+        MyPrint.print("有意义的重叠社区，社区名如下--------------------------");
+        for(String e :meaningfullOverlapCommuNames){
+            MyPrint.print(e);
+        }
+        MyPrint.print("-----------------------------");
 
 
         //将有意义的重叠社区、 有意义的独立社区按格式打印到文本文件中
-//        saveMeaningfulComuunities(overlapPartition,meaningfullOverlapCommuNames,meaningfulSeparateCommuNames);
-//        saveTotalOverlapCommunities(overlapPartition,totalOverlapTagSet);
+        saveMeaningfulComuunities(overlapPartition,meaningfullOverlapCommuNames,meaningfulSeparateCommuNames);
+        saveTotalOverlapCommunities(overlapPartition,totalOverlapTagSet);
         findTheSourceOfNewBigOverlapNodes(overlapPartition,totalOverlapTagSet);
-        findIneractionBetweenTwoverlapCommunities(overlapPartition,totalOverlapTagSet);
+        findIneractionBetweenTwoverlapCommunities(overlapPartition,meaningfullOverlapCommuNames);
     }
 
     /**
@@ -129,23 +133,50 @@ public class AnalysisCommunitiesDistribution {
         }
     }
 
-    private static void findIneractionBetweenTwoverlapCommunities(OverlapPartition overlapPartition,Set<String>totalOverlapTagSet){
-        List<String>totalOverlapCommunityNames = new ArrayList<String>();
-        totalOverlapCommunityNames.addAll(totalOverlapTagSet);
-        for(int i=0;i < totalOverlapCommunityNames.size();i++){
-            List<String> nodesOfCommunityI = overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(i));
-            Set<String> setI = new HashSet<String>();
-            setI.addAll(nodesOfCommunityI);
-            for(int j=i+1;j < totalOverlapCommunityNames.size();j++){
-                List<String> nodesOfCommunityJ = overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(j));
-                Set<String> setJ = new HashSet<String>();
-                setJ.addAll(nodesOfCommunityJ);
+    private static void findIneractionBetweenTwoverlapCommunities(OverlapPartition overlapPartition,Set<String>overlapTagSet){
+        try {
+            FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\community analysis\\overlapNodesBetweenMeaningfulOverlapCommunities.txt");
+            BufferedWriter bw = new BufferedWriter(writer);
+            List<String> totalOverlapCommunityNames = new ArrayList<String>();
+            int oc = overlapTagSet.size();
+            String[] overlapCommunityNames = new String[oc];
+            int[][] intersectionMatrix = new int[oc][oc];
+            totalOverlapCommunityNames.addAll(overlapTagSet);
+            for (int i = 0; i < totalOverlapCommunityNames.size(); i++) {
+                overlapCommunityNames[i] = totalOverlapCommunityNames.get(i);
+                List<String> nodesOfCommunityI = overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(i));
+                Set<String> setI = new HashSet<String>();
+                setI.addAll(nodesOfCommunityI);
+                for (int j = i + 1; j < totalOverlapCommunityNames.size(); j++) {
+                    List<String> nodesOfCommunityJ = overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(j));
+                    Set<String> setJ = new HashSet<String>();
+                    setJ.addAll(nodesOfCommunityJ);
 
-                Set<String> interactionOfCommunityIAndJ = getInterSectionOf2Set(setI,setJ);
-                if(interactionOfCommunityIAndJ.size() > 0) {
-                    MyPrint.print("社区标志" + totalOverlapCommunityNames.get(i) + " 与社区标志" + totalOverlapCommunityNames.get(j) + " 之间的重叠节点个数=" + interactionOfCommunityIAndJ.size());
+                    Set<String> interactionOfCommunityIAndJ = getInterSectionOf2Set(setI, setJ);
+                    if (interactionOfCommunityIAndJ.size() > 0) {
+                        StringBuffer sb = new StringBuffer();
+                        intersectionMatrix[i][j] = interactionOfCommunityIAndJ.size();
+                        intersectionMatrix[j][i] = interactionOfCommunityIAndJ.size();
+                        MyPrint.print("社区标志" + totalOverlapCommunityNames.get(i) + "(" + overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(i)).size() + ")" + " 与社区标志" + totalOverlapCommunityNames.get(j) + "(" + overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(j)).size() + ")" + " 之间的重叠节点个数=" + interactionOfCommunityIAndJ.size());
+                        sb.append("社区标志" + totalOverlapCommunityNames.get(i) + "(" + overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(i)).size() + "个)" + " 与社区标志" + totalOverlapCommunityNames.get(j) + "(" + overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(j)).size() + "个)" + " 之间的重叠节点个数=" + interactionOfCommunityIAndJ.size()+" :");
+                        for(String e: interactionOfCommunityIAndJ){
+                            sb.append(e);
+                            sb.append(",");
+                        }
+                        sb.deleteCharAt(sb.lastIndexOf(","));
+                        bw.write(sb.toString());
+                        bw.newLine();
+                    }
                 }
             }
+
+            bw.close();
+            writer.close();
+
+            MySerialization.serializeObject(overlapCommunityNames,"D:\\paperdata\\soybean\\community detection\\community analysis\\trueOverlapCommunitiesNames.obj");
+            MySerialization.serializeObject(intersectionMatrix,"D:\\paperdata\\soybean\\community detection\\community analysis\\trueOverlapCommunitiesIntersection.obj");
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -163,7 +194,7 @@ public class AnalysisCommunitiesDistribution {
             BufferedWriter bw2 = new BufferedWriter(writer2);
 
             StringBuffer sb = new StringBuffer();
-            sb.append("本文件中的社区是有意义的独立社区，即“独立的无重叠节点的”且所包含的基因个数 > 7的社区 \n");
+            sb.append("本文件中的社区是有意义的独立社区，即“独立的无重叠节点的”且所包含的基因个数 >= 10的社区 \n");
             bw1.write(sb.toString());
             sb = new StringBuffer();
             sb.append("有意义的社区个数 ="+meaningfulSeperateCommuNames.size()+"\n");
@@ -178,7 +209,7 @@ public class AnalysisCommunitiesDistribution {
             bw2.newLine();
             bw2.write(sb.toString());
             sb = new StringBuffer();
-            sb.append("若吸入节点之前 commuName的社区大小 > 5，吸入节点之后名为commuName的重叠社区大小 > 7，则认为该commuName对应的社区是有意义的");
+            sb.append("若吸入节点之后名为commuName的重叠社区大小 >= 10，则认为该commuName对应的社区是有意义的");
             bw2.newLine();
             bw2.write(sb.toString());
             sb = new StringBuffer();
@@ -195,10 +226,16 @@ public class AnalysisCommunitiesDistribution {
                     bw1.write("-----------------------------------------------------------------------------");
                     bw1.newLine();
                     bw1.write("社区名： "+commuName+"包含"+overlapPartition.getCommunities().get(commuName).size()+" 个基因");
+//                    StringBuffer sb1 = new StringBuffer();
                     for(String e:overlapPartition.getCommunities().get(commuName)){
+//                        sb1.append(e);
+//                        sb1.append(",");
                         bw1.newLine();
                         bw1.write(e);
                     }
+//                    bw1.newLine();
+//                    sb1.deleteCharAt(sb1.lastIndexOf(","));
+//                    bw1.write(sb1.toString());
                     bw1.newLine();
                     bw1.write("-----------------------------------------------------------------------------");
                 }
@@ -207,10 +244,16 @@ public class AnalysisCommunitiesDistribution {
                     bw2.write("-----------------------------------------------------------------------------");
                     bw2.newLine();
                     bw2.write("社区名： "+commuName+"包含"+overlapPartition.getCommunities().get(commuName).size()+" 个基因");
+//                    StringBuffer sb2 = new StringBuffer();
                     for(String e:overlapPartition.getCommunities().get(commuName)){
                         bw2.newLine();
                         bw2.write(e);
+//                        sb2.append(e);
+//                        sb2.append(",");
                     }
+//                    bw2.newLine();
+//                    sb2.deleteCharAt(sb2.lastIndexOf(","));
+//                    bw2.write(sb2.toString());
                     bw2.newLine();
                     bw2.write("-----------------------------------------------------------------------------");
                 }
@@ -283,7 +326,7 @@ public class AnalysisCommunitiesDistribution {
      * 获取非重叠社区的size分布
      * @param partition
      */
-    private void findNonOverlapCommunitySizeDistribution(Partition partition){
+    private static void findNonOverlapCommunitySizeDistribution(Partition partition){
         List<Integer> communitySizeDistribution = new ArrayList<Integer>();
         Map<String,List<String>> communities = partition.getCommunities();
         Iterator iterator = communities.entrySet().iterator();
@@ -314,17 +357,22 @@ public class AnalysisCommunitiesDistribution {
      * 找重叠社区的size分布图
      * @param overlapPartition
      */
-    private void findCommunitySizeDistribution(OverlapPartition overlapPartition){
+    private static void findOverlapCommunitySizeDistribution(OverlapPartition overlapPartition){
         int[] sizeArray = new int[overlapPartition.getCommunities().size()];
         Map<String,List<String>> communities = overlapPartition.getCommunities();
         Iterator iterator = communities.entrySet().iterator();
         int i=0;
+        int count = 0;
         while(iterator.hasNext()){
             Map.Entry entry = (Map.Entry<String,List<String>>)iterator.next();
             int size = ((List<String>)entry.getValue()).size();
 
             sizeArray[i++]=size;
+            if(size >= 10){
+                count++;
+            }
         }
+        MyPrint.print("++++++++++++"+count);
         MySerialization.serializeObject(sizeArray,"D:\\paperdata\\soybean\\community detection\\community analysis\\overlapCommunitiesSizeArray.obj");
     }
 
@@ -340,7 +388,11 @@ public class AnalysisCommunitiesDistribution {
      * “真正的”重叠社区，两两之间的交集大小
      * @return
      */
-    public int[][] getTrueOverlapCommunitiesIntersection(){
+    public int[][] getTrueOverlapCommunitiesIntersectionMatrix(){
         return (int[][])MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\community analysis\\trueOverlapCommunitiesIntersection.obj");
+    }
+
+    public String[] getTrueOverlapCommunitiesNames(){
+        return (String[])MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\community analysis\\trueOverlapCommunitiesNames.obj");
     }
 }
