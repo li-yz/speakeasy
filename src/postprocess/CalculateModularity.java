@@ -44,7 +44,7 @@ public class CalculateModularity {
                 int Aij = 0;
                 VertexNode nodei = g.map.get(allNodeList.get(i));
                 VertexNode nodej = g.map.get(allNodeList.get(j));
-                if(nodei.neighborList.contains(allNodeList.get(j)) ){
+                if(nodei.neighborList.containsKey(allNodeList.get(j)) ){
                     Aij=1;
                 }
                 int Ki=nodei.neighborList.size();//节点i的度

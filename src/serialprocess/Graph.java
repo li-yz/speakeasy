@@ -80,27 +80,32 @@ public class Graph implements Serializable{
 //					String []str=readrow.split(" ");
 					VertexNode from=new VertexNode(str[0]);
 					VertexNode to=new VertexNode(str[1]);
-						Edges newEdge=new Edges(from, to);
-						//把读取到的这条边添加到图的边集合中
-						edgelist.add(newEdge);
-						
-						//把from节点与to节点对应的节点都保存到map中，同时过滤重复的节点名
-						if(!map.containsKey(str[0])){
-							from.neighborList.add(str[1]);
-							map.put(str[0], from);
-						}else{
-							from=map.get(str[0]);
-							from.neighborList.add(str[1]);
-							map.put(str[0], from);
-						}
-						if(!map.containsKey(str[1])){
-							to.neighborList.add(str[0]); 
-							map.put(str[1], to);
-						}else{
-							to=map.get(str[1]);
-							to.neighborList.add(str[0]);
-							map.put(str[1], to);
-						}
+					double weight = Double.parseDouble(str[2]);
+					Edges newEdge=new Edges(from, to ,weight);
+					//把读取到的这条边添加到图的边集合中
+					edgelist.add(newEdge);
+
+					//把from节点与to节点对应的节点都保存到map中，同时过滤重复的节点名
+					if(!map.containsKey(str[0])){
+//							from.neighborList.add(str[1]);
+						from.neighborList.put(str[1],weight);
+						map.put(str[0], from);
+					}else{
+						from=map.get(str[0]);
+//							from.neighborList.add(str[1]);
+						from.neighborList.put(str[1],weight);
+						map.put(str[0], from);
+					}
+					if(!map.containsKey(str[1])){
+//							to.neighborList.add(str[0]);
+						to.neighborList.put(str[0],weight);
+						map.put(str[1], to);
+					}else{
+						to=map.get(str[1]);
+//							to.neighborList.add(str[0]);
+						to.neighborList.put(str[0],weight);
+						map.put(str[1], to);
+					}
 						
 				}
 				bf.close();
@@ -136,17 +141,20 @@ public class Graph implements Serializable{
 					String []str=readrow.split("\t");
 					VertexNode from=new VertexNode(str[0]);
 					VertexNode to=new VertexNode(str[1]);
-						Edges newEdge=new Edges(from, to);
+					double weight = Double.parseDouble(str[2]);
+						Edges newEdge=new Edges(from, to,weight);
 						//把读取到的这条边添加到图的边集合中
 						edgelist.add(newEdge);
 						
 						//每读取一条边只把from节点对应的节点保存到map中即可，同时过滤重复的节点名
 						if(!map.containsKey(str[0])){
-							from.neighborList.add(str[1]);
+//							from.neighborList.add(str[1]);
+							from.neighborList.put(str[1],weight);
 							map.put(str[0], from);
 						}else{
 							from=map.get(str[0]);
-							from.neighborList.add(str[1]);
+//							from.neighborList.add(str[1]);
+							from.neighborList.put(str[1],weight);
 							map.put(str[0], from);
 						}
 						
@@ -216,8 +224,9 @@ public class Graph implements Serializable{
 			q.offer(v);
 			while(!q.isEmpty()){
 				VertexNode queueFront=q.poll();
-				for(int j=0;j<queueFront.neighborList.size();j++){
-					String neighborName=queueFront.neighborList.get(j);
+				for(Map.Entry entry :queueFront.neighborList.entrySet()){
+
+					String neighborName=(String) entry.getKey();
 					VertexNode curNeighbor=g.map.get(neighborName);
 					if(!g.visited.contains(neighborName)){
 						//访问该节点

@@ -10,8 +10,8 @@ import utils.MySerialization;
  */
 public class AnalysisGANXiSwOverlapResultEQ {
     public static void main(String[] args){
-        String GANXisWCommunitiesPath = "E:\\毕业论文\\GANXiS_v3.0.2\\GANXiS_v3.0.2\\output\\soybean\\SLPAw_soybean-network_run1_r0.1_v3_T50.icpm";
-        String GANXiSwOverlapNodesPath = "E:\\毕业论文\\GANXiS_v3.0.2\\GANXiS_v3.0.2\\output\\soybean\\SLPAw_soybean-network_run1_r0.1_v3_T50.icpm.ovnodes.txt";
+        String GANXisWCommunitiesPath = "E:\\毕业论文\\GANXiS_v3.0.2\\GANXiS_v3.0.2\\output\\weightedsoybean\\SLPAw_weighted-soybean-network_run1_r0.1_v3_T50.icpm";
+        String GANXiSwOverlapNodesPath = "E:\\毕业论文\\GANXiS_v3.0.2\\GANXiS_v3.0.2\\output\\weightedsoybean\\SLPAw_weighted-soybean-network_run1_r0.1_v3_T50.icpm.ovnodes.txt";
 
         OverlapPartition GANXiSwOverlapPartition = AnalysisGANXiSwResult.readOverlapPartition(GANXisWCommunitiesPath,GANXiSwOverlapNodesPath);
 

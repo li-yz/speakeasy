@@ -1,11 +1,6 @@
 package serialprocess;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
@@ -31,7 +26,11 @@ public class SpeakEasy {
 			if(numNeighbor > 0){
 				Random rand=new Random();
 				int c=rand.nextInt(numNeighbor);
-				String label=v.neighborList.get(c);
+				List<String>nbNamesList = new ArrayList<String>();
+				for(Map.Entry entry :v.neighborList.entrySet()){
+					nbNamesList.add((String) entry.getKey());
+				}
+				String label=nbNamesList.get(c);
 				v.labelBuffer.add(label);
 			}else if(numNeighbor == 0){
 				v.labelBuffer.add(v.vertexName);
@@ -77,18 +76,22 @@ public class SpeakEasy {
 		double maxSpecity=0.0d;
 		String specifyLabel="";
 		int bufferSize=g.bufferSize;
-		Map<String, Integer>actualLabel=new HashMap<String, Integer>();
-		for(int actIndex=0;actIndex < v.neighborList.size();actIndex++){//外层循环，遍历所有邻居节点
-			String nbName=v.neighborList.get(actIndex);
+		Map<String, Double>actualLabel=new HashMap<String, Double>();
+		Iterator nbIter = v.neighborList.entrySet().iterator();
+
+		while (nbIter.hasNext()){//外层循环，遍历所有邻居节点
+			Map.Entry<String,Double> entry = (Map.Entry<String,Double>)nbIter.next();
+			String nbName=entry.getKey();
+			double weight = entry.getValue();
 			VertexNode neighbor=g.map.get(nbName);
 			
 			for(int bufferIndex=0;bufferIndex < bufferSize;bufferIndex++){//内层循环，遍历每个邻居节点的buffer
 				String label=neighbor.labelBuffer.get(bufferIndex);
 				if(actualLabel.containsKey(label)){
-					int value=actualLabel.get(label)+1;
+					double value=actualLabel.get(label)+weight;
 					actualLabel.put(label, value);
 				}else{
-					int value=1;
+					double value=weight;
 					actualLabel.put(label, value);
 				}
 			}

@@ -6,10 +6,7 @@ import serialprocess.VertexNode;
 import utils.MyPrint;
 import utils.MySerialization;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * 把网络图g用邻接矩阵A来表示，得到的 OverlapPartion形式的结果也用矩阵Communities来描述，便于使用matlab进行计算，
@@ -60,7 +57,11 @@ public class ConvertAndSaveOverlapResultToMatrix {
             Map.Entry<String, VertexNode> entry =(Map.Entry<String, VertexNode>) it.next();
             String vname = entry.getKey();
             int vi = nameMapIndex.get(vname);
-            List<String> neighbors = g.map.get(vname).neighborList;
+            List<String> neighbors = new ArrayList<String>();
+            for(Map.Entry nbEntry :g.map.get(vname).neighborList.entrySet()){
+                neighbors.add((String) nbEntry.getKey());
+            }
+
             for(String nodej: neighbors){
                 int vj = nameMapIndex.get(nodej);
                 A[vi][vj] = 1;

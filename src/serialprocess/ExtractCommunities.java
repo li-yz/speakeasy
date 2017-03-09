@@ -11,8 +11,8 @@ public class ExtractCommunities {
 		int bufferSize=g.bufferSize;
 		Map<String, Integer>labelsFromNbBuffer=new HashMap<String, Integer>();
 		if(v.neighborList.size() >0){	//节点v不是孤立节点
-			for(int nbIndex=0;nbIndex < v.neighborList.size();nbIndex++){//外层循环，遍历所有邻居节点
-				String nbName=v.neighborList.get(nbIndex);
+			for(Map.Entry entry :v.neighborList.entrySet()){//外层循环，遍历所有邻居节点
+				String nbName=(String)entry.getKey();
 				VertexNode neighbor=g.map.get(nbName);
 				
 				for(int bufferIndex=0;bufferIndex < bufferSize;bufferIndex++){//内层循环，遍历每个邻居节点的buffer

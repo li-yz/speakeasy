@@ -20,7 +20,7 @@ import java.util.Map;
 public class AnalysisGANXiSwResult {
 
     public static void main(String []args){
-        String GANXisWCommunitiesPath = "E:\\毕业论文\\GANXiS_v3.0.2\\GANXiS_v3.0.2\\output\\soybean\\SLPAw_soybean-network_run1_r0.01_v3_T50.icpm";
+        String GANXisWCommunitiesPath = "E:\\毕业论文\\GANXiS_v3.0.2\\GANXiS_v3.0.2\\output\\weightedsoybean\\SLPAw_weighted-soybean-network_run1_r0.01_v3_T50.icpm";
         Partition GANXiSwPartition = readCommunities(GANXisWCommunitiesPath);
 
     }

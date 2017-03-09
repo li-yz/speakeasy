@@ -56,7 +56,7 @@ public class CalculateEQ {
                 int Aij = 0;
                 VertexNode nodei = g.map.get(allNodeList.get(i));
                 VertexNode nodej = g.map.get(allNodeList.get(j));
-                if(nodei.neighborList.contains(allNodeList.get(j)) || nodej.neighborList.contains(allNodeList.get(i))){
+                if(nodei.neighborList.containsKey(allNodeList.get(j)) || nodej.neighborList.containsKey(allNodeList.get(i))){
                     Aij=1;
                 }
                 int Ki=nodei.neighborList.size();//节点i的度
@@ -138,7 +138,7 @@ public class CalculateEQ {
                     int Aij = 0;
                     VertexNode nodei = g.map.get(nodes.get(i));
                     VertexNode nodej = g.map.get(nodes.get(j));
-                    if(nodei.neighborList.contains(nodes.get(j)) || nodej.neighborList.contains(nodes.get(i))){
+                    if(nodei.neighborList.containsKey(nodes.get(j)) || nodej.neighborList.containsKey(nodes.get(i))){
                         Aij=1;//节点i与j之间有边相连
                     }
                     int Ki=nodei.neighborList.size();//节点i的度

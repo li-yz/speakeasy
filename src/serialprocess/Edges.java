@@ -10,11 +10,13 @@ import java.io.Serializable;
 public class Edges implements Serializable{
 	VertexNode fromNode;
 	VertexNode toNode;
+	double weight;
 	public Edges() {
 		// TODO Auto-generated constructor stub
 	}
-	public Edges(VertexNode fNode,VertexNode tNode){
+	public Edges(VertexNode fNode,VertexNode tNode,double weight){
 		this.fromNode=fNode;
 		this.toNode=tNode;
+		this.weight=weight;
 	}
 }

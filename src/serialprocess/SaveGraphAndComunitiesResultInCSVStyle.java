@@ -18,8 +18,8 @@ import java.util.TreeMap;
 public class SaveGraphAndComunitiesResultInCSVStyle {
     public static void main(String[] args){
         Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
-        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.2.18\\bestNonOverlapPartition.obj");
-        OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.2.18\\overlapPartition.obj");
+        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+//        OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.2.26\\overlapPartition.obj");
 
         saveGraphInCSVStyle(g,bestNonOverlapPartition);
     }
@@ -108,6 +108,8 @@ public class SaveGraphAndComunitiesResultInCSVStyle {
             th.append("Type");
             th.append("\t");
             th.append("id");
+            th.append("\t");
+            th.append("weight");
             bwedge.write(th.toString());
             bwedge.newLine();
 
@@ -128,6 +130,8 @@ public class SaveGraphAndComunitiesResultInCSVStyle {
                 sb.append("Undirected");
                 sb.append("\t");
                 sb.append(edgeId);
+                sb.append("\t");
+                sb.append(edge.weight);
                 bwedge.write(sb.toString());
                 bwedge.newLine();
 

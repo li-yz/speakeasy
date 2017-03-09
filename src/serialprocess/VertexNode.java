@@ -16,11 +16,12 @@ public class VertexNode implements Serializable{
 	public String vertexName;
 	
 	//存放相邻节点的名字
-	public List<String> neighborList=new ArrayList<String>();
-	
+//	public List<String> neighborList=new ArrayList<String>();
+	 public Map<String,Double>neighborList = new HashMap<String, Double>();
+
 	//节点的缓存区buffer
 	public List<String> labelBuffer=new ArrayList<String>();
-	
+
 	public VertexNode()
 	{
 		
