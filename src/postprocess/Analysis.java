@@ -29,10 +29,11 @@ public class Analysis {
         analysis.getCommunitySizeDistribution(overlapPartition);
 
         Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
-        double mudularity = CalculateModularity.calculateModularity(g,bestNonOverlapPartition);
-        MyPrint.print("非重叠情况下，得到的划分结果的模块度："+mudularity);
+//        double mudularity = CalculateModularity.calculateModularity(g,bestNonOverlapPartition);
+//        MyPrint.print("非重叠情况下，得到的划分结果的模块度："+mudularity);
 
-        rankNodeCommunities(overlapPartition);
+//        rankNodeCommunities(overlapPartition);
+        analysisSmallCommunity(bestNonOverlapPartition,g);
     }
 
     /**
@@ -109,23 +110,43 @@ public class Analysis {
         }
     }
 
-    private void analysisSmallCommunity(){
+    private static void analysisSmallCommunity(Partition bestNonOverlapPartition ,Graph g){
+        double min = 10000;
+        double max = 0.0d;
+        double sum = 0.0d;
+        int numNode = 0;
+        int numSmallCommunity = 0;
+        List<Integer> degrees = new ArrayList<Integer>();
+        Iterator iterator = bestNonOverlapPartition.getCommunities().entrySet().iterator();
+        while(iterator.hasNext()){
+            Map.Entry<String,List<String>> entry = (Map.Entry<String,List<String>>)iterator.next();
+            if(entry.getValue().size() <=3){
+                numSmallCommunity++;
+                for(String v :entry.getValue()){
+                    numNode++;
+                    int degree = g.map.get(v).neighborList.size();
+                    degrees.add(degree);
+                    if(degree < min){
+                        min = degree;
+                    }
+                    if(degree > max){
+                        max = degree;
+                    }
+                    sum+=degree;
+                }
+            }
+        }
 
+        MyPrint.print("------------下面分析小社区内的节点度------------");
+        MyPrint.print("社区size小于等于3的个数："+numSmallCommunity);
+        MyPrint.print("最小度："+min);
+        MyPrint.print("最大度："+max);
+        MyPrint.print("平均度："+sum/numNode);
+        StringBuffer sb = new StringBuffer();
+        for(int d :degrees){
+            sb.append(d+",");
+        }
+        MyPrint.print(sb.toString());
     }
 
-    private static void testSerialization(){
-        OverlapPartition overlapPartition = new OverlapPartition();
-        Map<String,List<String>> communities = new HashMap<String, List<String>>();
-        List<String> list = new ArrayList<String>();
-        list.add("first");
-        communities.put("first",list);
-        overlapPartition.setCommunities(communities);
-
-        MySerialization mySerialization = new MySerialization();
-        MySerialization.serializeObject(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\test.obj");
-
-        OverlapPartition testObject = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\test.obj");
-
-        MyPrint.print("反序列化： "+testObject.getCommunities().get("first").get(0));
-    }
 }

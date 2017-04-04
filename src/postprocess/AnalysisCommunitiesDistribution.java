@@ -17,8 +17,8 @@ public class AnalysisCommunitiesDistribution {
     public static void main(String[] args){
         //反序列化之前保存的网络图G、最优非重叠划分、重叠划分结果
 //        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
-        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
-        OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
+        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\bestNonOverlapPartition.obj");
+        OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\overlapPartition.obj");
 
         MyPrint.print("非重叠社区个数： "+bestNonOverlapPartition.getCommunities().size());
         MyPrint.print("重叠社区个数： "+overlapPartition.getCommunities().size());
@@ -32,7 +32,6 @@ public class AnalysisCommunitiesDistribution {
         MyPrint.print("重叠社区平均社区大小="+(double)sum/overlapPartition.getCommunities().size());
 
         compare1(bestNonOverlapPartition,overlapPartition);
-
 
     }
 
@@ -141,36 +140,15 @@ public class AnalysisCommunitiesDistribution {
         MySerialization.serializeObject(overlapComSize,"D:\\paperdata\\soybean\\community detection\\community analysis\\overlapComSizeArray.obj");
 
         //将有意义的重叠社区、 有意义的独立社区按格式打印到文本文件中
-        saveMeaningfulComuunities(overlapPartition,meaningfullOverlapCommuNames,meaningfulSeparateCommuNames);
-        saveTotalOverlapCommunities(overlapPartition,totalOverlapTagSet);
-//        findTheSourceOfNewBigOverlapNodes(overlapPartition,totalOverlapTagSet);
+//        saveMeaningfulComuunities(overlapPartition,meaningfullOverlapCommuNames,meaningfulSeparateCommuNames);
+//        saveTotalOverlapCommunities(overlapPartition,totalOverlapTagSet);
         findIneractionBetweenTwoverlapCommunities(overlapPartition,meaningfullOverlapCommuNames);
-    }
-
-    /**
-     * 判断原来只有一个节点的社区在 吸收了很多节点之后而成大重叠社区，看这些被吸收的节点来自哪里
-     * @param overlapPartition
-     * @param totalOverlapTagSet
-     */
-    private static void findTheSourceOfNewBigOverlapNodes(OverlapPartition overlapPartition,Set<String>totalOverlapTagSet){
-        List<String> newBigOverlapCommunity = overlapPartition.getCommunities().get("Gma.1043.2.S1_at");
-        for(String tag :totalOverlapTagSet){
-            List<String> nodes = overlapPartition.getCommunities().get(tag);
-            int num = 0;
-            for(String node :nodes){
-                if(newBigOverlapCommunity.contains(node)){
-                    num++;
-
-                }
-            }
-            if(num > 0 && !"Gma.1043.2.S1_at".equals(tag)){
-                MyPrint.print("1297个节点的大社区Gma.1043.2.S1_at包含社区 "+tag+"中的 "+num+" 个节点");
-            }
-        }
     }
 
     private static void findIneractionBetweenTwoverlapCommunities(OverlapPartition overlapPartition,Set<String>overlapTagSet){
         try {
+            Map<String,String> geneIdMapEntrezId =(Map<String,String>) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\基因ID-gene name\\geneIdMapEntrezId.obj");//基因 affy ID与 entrez ID之间映射关系
+
             FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\community analysis\\overlapNodesBetweenMeaningfulOverlapCommunities.txt");
             BufferedWriter bw = new BufferedWriter(writer);
             Set<String> allOverlapNodes = new HashSet<String>();
@@ -192,7 +170,6 @@ public class AnalysisCommunitiesDistribution {
                     setJ.addAll(nodesOfCommunityJ);
 
                     Set<String> interactionOfCommunityIAndJ = getInterSectionOf2Set(setI, setJ);
-
                     if (interactionOfCommunityIAndJ.size() > 0) {
                         StringBuffer sb = new StringBuffer();
                         intersectionMatrix[i][j] = interactionOfCommunityIAndJ.size();
@@ -201,19 +178,20 @@ public class AnalysisCommunitiesDistribution {
                         sb.append("社区序号("+i+") 社区标志" + totalOverlapCommunityNames.get(i) + "(" + overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(i)).size() + "个)" + "与社区序号 ("+j+") 与社区标志" + totalOverlapCommunityNames.get(j) + "(" + overlapPartition.getCommunities().get(totalOverlapCommunityNames.get(j)).size() + "个)" + " 之间的重叠节点个数=" + interactionOfCommunityIAndJ.size()+" :");
                         sb.append("\n");
                         for(String e: interactionOfCommunityIAndJ){
-                            sb.append(e);
-                            sb.append(",");
+                            String entrezId = geneIdMapEntrezId.get(e);
+                            sb.append(entrezId);
+                            sb.append("\n");
                         }
-                        sb.deleteCharAt(sb.lastIndexOf(","));
+                        sb.deleteCharAt(sb.lastIndexOf("\n"));
                         bw.write(sb.toString());
                         bw.newLine();
                         bw.write("--------------------------");
                         bw.newLine();
                     }
 
-                    if((double)interactionOfCommunityIAndJ.size()/setI.size() < 0.85 && (double)interactionOfCommunityIAndJ.size()/setJ.size() < 0.85){
+//                    if((double)interactionOfCommunityIAndJ.size()/setI.size() < 0.85 && (double)interactionOfCommunityIAndJ.size()/setJ.size() < 0.85){
                         allOverlapNodes.addAll(interactionOfCommunityIAndJ);
-                    }
+//                    }
 
                 }
             }
@@ -232,6 +210,19 @@ public class AnalysisCommunitiesDistribution {
 
     private static void printOverlapNodes(Set<String>allOverlapNodes){
         try {
+            Set<String> set = new HashSet<String>();
+            set.add("Gma.16735.2.S1_at");
+            set.add("GmaAffx.21211.1.S1_at");
+            set.add("GmaAffx.92386.1.S1_at");
+            set.add("GmaAffx.91805.1.S1_s_at");
+            set.add("Gma.6606.1.S1_at");
+            set.add("GmaAffx.91805.1.S1_at");
+            set.add("GmaAffx.80951.1.S1_at");
+            set.add("Gma.7559.1.S1_s_at");
+            set.add("GmaAffx.92383.1.S1_at");
+            Set<String> intersection = getInterSectionOf2Set(set,allOverlapNodes);
+            MyPrint.print("+++++++++++++有意义的重叠社区内的重叠节点包含几个“文献体现的重要基因”："+intersection.size());
+
             FileWriter writer = new FileWriter("D:\\paperdata\\soybean\\community detection\\community analysis\\allOverlapNodes.txt");
             BufferedWriter bw = new BufferedWriter(writer);
 
@@ -255,18 +246,53 @@ public class AnalysisCommunitiesDistribution {
      */
     private static void saveMeaningfulComuunities(OverlapPartition overlapPartition,Set<String> meaningfullOverlapCommuNames,Set<String>meaningfulSeperateCommuNames){
         try {
+            Map<String,String> geneIdMapEntrezId =(Map<String,String>) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\基因ID-gene name\\geneIdMapEntrezId.obj");
+
             FileWriter writer1 = new FileWriter("D:\\paperdata\\soybean\\community detection\\community analysis\\meaningfulSeperateResult.txt");
             BufferedWriter bw1 = new BufferedWriter(writer1);
+            FileWriter entrezWriter1 = new FileWriter("D:\\paperdata\\soybean\\community detection\\community analysis\\meaningfulSeperateResultInEntrezId.txt");
+            BufferedWriter bwEntrez1 = new BufferedWriter(entrezWriter1);
+
             FileWriter writer2 = new FileWriter("D:\\paperdata\\soybean\\community detection\\community analysis\\meaningfulOverlapResult.txt");
             BufferedWriter bw2 = new BufferedWriter(writer2);
+            FileWriter entrezWriter2 = new FileWriter("D:\\paperdata\\soybean\\community detection\\community analysis\\meaningfulOverlapResultInEntrezId.txt");
+            BufferedWriter bwEntrez2 = new BufferedWriter(entrezWriter2);
 
             StringBuffer sb = new StringBuffer();
             sb.append("本文件中的社区是有意义的独立社区，即“独立的无重叠节点的”且所包含的基因个数 >= 10的社区 \n");
             bw1.write(sb.toString());
+
             sb = new StringBuffer();
             sb.append("有意义的社区个数 ="+meaningfulSeperateCommuNames.size()+"\n");
             bw1.newLine();
             bw1.write(sb.toString());
+            bwEntrez1.write("本文件中是有意义的独立社区，不同之处是：以entrez gene ID来代表一个基因，便于进行pathway分析"+"\n");
+            bwEntrez1.write("有意义的社区个数 ="+meaningfulSeperateCommuNames.size()+"\n");
+
+            //输出有意义的“独立社区”
+            for(String name :meaningfulSeperateCommuNames){
+                bw1.newLine();
+                bw1.write("-----------------------------------------------------------------------------");
+                bw1.newLine();
+                bw1.write("社区名： "+name+"包含"+overlapPartition.getCommunities().get(name).size()+" 个基因");
+
+                bwEntrez1.newLine();
+                bwEntrez1.write("-------------------------------------------------------------------------");
+                bwEntrez1.newLine();
+                bwEntrez1.write("社区名： "+name+"包含"+overlapPartition.getCommunities().get(name).size()+" 个基因");
+                for(String e:overlapPartition.getCommunities().get(name)){
+                    bw1.newLine();
+                    bw1.write(e);
+
+                    if(geneIdMapEntrezId.containsKey(e)){
+                        bwEntrez1.newLine();
+                        bwEntrez1.write(geneIdMapEntrezId.get(e));
+                    }
+
+                }
+                bw1.newLine();
+                bw1.write("-----------------------------------------------------------------------------");
+            }
 
             sb = new StringBuffer();
             sb.append("本文件中是真正的重叠社区 \n");
@@ -283,53 +309,45 @@ public class AnalysisCommunitiesDistribution {
             sb.append("那些原本只有1个或很少节点的社区，经过识别重叠节点，其社区大小增长很大；如原来只有1个节点，最后增长到了1297的社区，原来仅有的1个节点基因可能有生物学意义");
             bw2.newLine();
             bw2.write(sb.toString());
-            Iterator it = overlapPartition.getCommunities().entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String,List<String>> entry = (Map.Entry<String,List<String>>)it.next();
-                String commuName = entry.getKey();
-                if(meaningfulSeperateCommuNames.contains(commuName)){
-                    //该社区是有意义的独立社区，“独立的无重叠节点的”且所包含的基因个数 > 7的社区
-                    bw1.newLine();
-                    bw1.write("-----------------------------------------------------------------------------");
-                    bw1.newLine();
-                    bw1.write("社区名： "+commuName+"包含"+overlapPartition.getCommunities().get(commuName).size()+" 个基因");
-//                    StringBuffer sb1 = new StringBuffer();
-                    for(String e:overlapPartition.getCommunities().get(commuName)){
-//                        sb1.append(e);
-//                        sb1.append(",");
-                        bw1.newLine();
-                        bw1.write(e);
-                    }
-//                    bw1.newLine();
-//                    sb1.deleteCharAt(sb1.lastIndexOf(","));
-//                    bw1.write(sb1.toString());
-                    bw1.newLine();
-                    bw1.write("-----------------------------------------------------------------------------");
-                }
-                else if(meaningfullOverlapCommuNames.contains(commuName)){
-                    bw2.newLine();
-                    bw2.write("-----------------------------------------------------------------------------");
-                    bw2.newLine();
-                    bw2.write("社区名： "+commuName+"包含"+overlapPartition.getCommunities().get(commuName).size()+" 个基因");
-//                    StringBuffer sb2 = new StringBuffer();
-                    for(String e:overlapPartition.getCommunities().get(commuName)){
-                        bw2.newLine();
-                        bw2.write(e);
-//                        sb2.append(e);
-//                        sb2.append(",");
-                    }
-//                    bw2.newLine();
-//                    sb2.deleteCharAt(sb2.lastIndexOf(","));
-//                    bw2.write(sb2.toString());
-                    bw2.newLine();
-                    bw2.write("-----------------------------------------------------------------------------");
-                }
 
+            bwEntrez2.write("本文件中是真正的重叠社区 \n");
+            bwEntrez2.write("其中有意义的重叠社区个数 = "+meaningfullOverlapCommuNames.size()+"\n");
+
+            //输出有意义的重叠社区
+            List<String> list = new ArrayList<String>();
+            list.addAll(meaningfullOverlapCommuNames);
+            for(int i=0;i < list.size();i++){
+                String comName = list.get(i);
+                bw2.newLine();
+                bw2.write("-----------------------------------------------------------------------------");
+                bw2.newLine();
+                bw2.write("社区名： "+comName+"包含"+overlapPartition.getCommunities().get(comName).size()+" 个基因");
+
+                bwEntrez2.newLine();
+                bwEntrez2.write("--------------------------------------------------------------------------");
+                bwEntrez2.newLine();
+                bwEntrez2.write("社区名： "+comName+"包含"+overlapPartition.getCommunities().get(comName).size()+" 个基因");
+                for(String e:overlapPartition.getCommunities().get(comName)){
+                    bw2.newLine();
+                    bw2.write(e);
+
+                    if(geneIdMapEntrezId.containsKey(e)){
+                        bwEntrez2.newLine();
+                        bwEntrez2.write(geneIdMapEntrezId.get(e));
+                    }
+                }
+                bw2.newLine();
+                bw2.write("-----------------------------------------------------------------------------");
             }
+
             bw1.close();
             writer1.close();
             bw2.close();
             writer2.close();
+            bwEntrez1.close();
+            entrezWriter1.close();
+            bwEntrez2.close();
+            entrezWriter2.close();
         }catch (Exception e){
             e.printStackTrace();
         }

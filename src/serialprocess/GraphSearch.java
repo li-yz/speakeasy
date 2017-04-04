@@ -30,7 +30,7 @@ public class GraphSearch {
 			g.visited.clear();
 		}
 		//迭代标签更新的过程，执行多次，直到节点的buffer不再有显著变化，即收敛
-		for(int repeatTime=0;repeatTime < 80;repeatTime++){
+		for(int repeatTime=0;repeatTime < 200;repeatTime++){
 			g.globalFrequencies.clear();
 			g.BFSTraverse(g,2,partition);
 			g.visited.clear();

@@ -80,7 +80,12 @@ public class Graph implements Serializable{
 //					String []str=readrow.split(" ");
 					VertexNode from=new VertexNode(str[0]);
 					VertexNode to=new VertexNode(str[1]);
-					double weight = Double.parseDouble(str[2]);
+					double weight = 0.0d;
+					if(str.length <= 2){
+						weight = 1;
+					}else {
+						weight = Double.parseDouble(str[2]);
+					}
 					Edges newEdge=new Edges(from, to ,weight);
 					//把读取到的这条边添加到图的边集合中
 					edgelist.add(newEdge);
