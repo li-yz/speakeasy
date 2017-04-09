@@ -45,7 +45,17 @@ public class DetermineOverlapNodes {
 						}
 					}
 					double temp2=0.0d;
-					temp2=(double)temp1/(nodeInCList.size()*10);
+
+					//算法改进部分
+					List<String> nodeInVOriginalCom = bestPartitionCommunities.get(bestPartitionNodeMapCommu.get(vnodeName));
+					int max = nodeInVOriginalCom.size();
+					if(max < nodeInCList.size()){
+						max = nodeInCList.size();
+					}
+					//算法改进部分
+//					max = nodeInCList.size();//改进前
+
+					temp2=(double)temp1/(max*10);
 
 					//保存所有大于0的temp2的值，即Wv,c的值,了解其分布，以便选择合适的阈值
 					if(temp2 > 0) {
