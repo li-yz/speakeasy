@@ -17,14 +17,15 @@ public class ConsensusClustering {
     public static void main(String[] args){
         List<Partition>partitionList = (List<Partition>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\partitionList.obj");
         List<String> allNodeList = (List<String>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\allNodeList.obj");
+        List<String> allNodesOfBigCommunities = (List<String>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\community analysis\\allNodesInMeaningfulCom.obj");
 
         //确定阈值r需要的节点平均权值Wv,c的分布
         double meanOfWvc = AnalysisRValue.readWvcDataAndReturnMean("D:\\paperdata\\soybean\\community detection\\筛选重叠节点Wv,c分布\\Wvc.txt");
 
-        postProcessOfSpeakEasy(partitionList,allNodeList,meanOfWvc);
+        postProcessOfSpeakEasy(partitionList,allNodeList,allNodesOfBigCommunities,meanOfWvc);
     }
 
-    public static void postProcessOfSpeakEasy(List<Partition>partitionList,List<String>allNodeList, double meanOfWvc){
+    public static void postProcessOfSpeakEasy(List<Partition>partitionList,List<String>allNodeList,List<String> allNodesOfBigCommunities, double meanOfWvc){
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String startDate = sdf.format(date);
@@ -120,7 +121,7 @@ public class ConsensusClustering {
         }
 
         double r=(double)1/maxCommuNum;//论文中作者提到 r可以这么设定，特别是在生物网络中
-        r=0.3;
+        r=0.2;
 
 //        r = 3*meanOfWvc ;// 阈值r的值是可以适当调整的，r越大 得到的重叠节点就越少,取Wvc的均值
 
@@ -128,7 +129,7 @@ public class ConsensusClustering {
 
         //determine the overlapping nodes
         System.out.println("开始识别重叠社区节点");
-        DetermineOverlapNodes.determine(bestPartitionCommunities,bestPartitionNodeMapCommu, allNodeList, a, r, nodeMapCommunities);
+        DetermineOverlapNodes.determine(bestPartitionCommunities,bestPartitionNodeMapCommu, allNodesOfBigCommunities, a, r, nodeMapCommunities);
 
         System.out.println("nodeMapCommunities的大小即重叠节点的个数："+nodeMapCommunities.size());
 
