@@ -47,13 +47,13 @@ public class DetermineOverlapNodes {
 					double temp2=0.0d;
 
 					//4.10毕业论文中算法改进1部分
-					List<String> nodeInVOriginalCom = bestPartitionCommunities.get(bestPartitionNodeMapCommu.get(vnodeName));
-					int max = nodeInVOriginalCom.size();
-					if(max < nodeInCList.size()){
-						max = nodeInCList.size();
-					}
+//					List<String> nodeInVOriginalCom = bestPartitionCommunities.get(bestPartitionNodeMapCommu.get(vnodeName));
+//					int max = nodeInVOriginalCom.size();
+//					if(max < nodeInCList.size()){
+//						max = nodeInCList.size();
+//					}
 					//4.10毕业论文中算法改进1部分
-//					max = nodeInCList.size();//改进前
+					int max = nodeInCList.size();//改进前
 
 					temp2=(double)temp1/(max*10);
 
