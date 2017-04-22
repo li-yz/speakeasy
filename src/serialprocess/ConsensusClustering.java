@@ -14,6 +14,8 @@ public class ConsensusClustering {
     public static void main(String[] args){
         List<Partition>partitionList = (List<Partition>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\partitionList.obj");
         List<String> allNodeList = (List<String>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\allNodeList.obj");
+        Graph g = (Graph)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\graph.obj");
+        MyPrint.print("网络图g中"+g.map.size());
 //        List<String> allNodesOfBigCommunities = (List<String>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\community analysis\\allNodesInMeaningfulCom.obj");//毕业论文4.10改进2，新的输入节点列表
 
         //确定阈值r需要的节点平均权值Wv,c的分布
@@ -163,7 +165,7 @@ public class ConsensusClustering {
     }
 
     private static void mergeCommunities(Partition bestPartition,CooccurMatrix a,List<String>allNodesList){
-        double r = 1.0d;
+        double r = 0.6d;
         Map<String,List<String>> communities = bestPartition.getCommunities();
         List<String> comNames = new ArrayList<String>();
         comNames.addAll(communities.keySet());
@@ -175,10 +177,12 @@ public class ConsensusClustering {
             comIndexMapName.put(i,comNames.get(i));
         }
         for(int i=0;i < comNames.size();i++){
-            for(int j=i+1;j < comNames.size();j++){
-                String iName = comNames.get(i);
+            String iName = comNames.get(i);
+            List<String> nodesInCi = communities.get(iName);
+            for(int j=0;j < comNames.size();j++){
+                if(j == i)
+                    continue;
                 String jName = comNames.get(j);
-                List<String> nodesInCi = communities.get(iName);
                 List<String> nodesInCj = communities.get(jName);
                 double Bij = 0.0d;
                 for(int u=0;u < nodesInCi.size();u++){
@@ -186,29 +190,24 @@ public class ConsensusClustering {
                         String uNode = nodesInCi.get(u);
                         String vNode = nodesInCj.get(v);
 
-                        if(a.matrix.get(uNode)!=null) {
-                            int t = a.matrix.get(uNode).get(vNode) == null ? 0 : a.matrix.get(uNode).get(vNode);
+                        if(a.matrix.containsKey(uNode) && a.matrix.get(uNode).containsKey(vNode)) {
+                            int t = a.matrix.get(uNode).get(vNode);
+                            if(a.matrix.get(vNode).get(uNode) != t){
+                                MyPrint.print("******------共生矩阵A FALSE");
+                            }
                             Bij += t;
                         }
                     }
                 }
                 B[i][j] = Bij;
-                B[j][i] = Bij;
             }
-        }
-
-        //计算矩阵B的对角线元素，也即改进公式1的分母
-        for(int i=0;i < comNames.size();i++){
-            List<String>nodesInCi = communities.get(comNames.get(i));
+            //计算矩阵B对角线元素
             double Bii = 0.0d;
             for(int u=0;u < nodesInCi.size();u++){
                 for(int k=0;k < allNodesList.size();k++){
                     String uNode = nodesInCi.get(u);
                     String kNode = allNodesList.get(k);
-                    if(uNode.equals(kNode)){
-                        //即u与k是同一个点，则直接加0，因为共生矩阵a中对角线元素也是0
-                        Bii+=0;
-                    }else {
+                    if(!uNode.equals(kNode)){
                         if(a.matrix.containsKey(uNode) && a.matrix.get(uNode).containsKey(kNode)) {
                             Bii += a.matrix.get(uNode).get(kNode);
                         }
@@ -216,8 +215,11 @@ public class ConsensusClustering {
                 }
             }
             B[i][i]=Bii;
+            //矩阵B对角线元素计算完毕
         }
+
         //遍历所有社区组合，看是否合并
+        fixBug(allNodesList,B,comNames,bestPartition);
 
         //我们希望看到的是“小社区”被“大社区”合并，即合并的时候移除小社区，将其节点并入大社区
         //有可能出现这样的情况：即一个“小社区”Cj可能会被多个“大社区”所合并，而此处我们并不希望出现重叠情况，
@@ -225,7 +227,9 @@ public class ConsensusClustering {
         Map<String,Map<String,Double>> cooccurMap = new HashMap<String, Map<String, Double>>();
         for(int i=0;i < comNames.size();i++){
             for(int j= 0;j < comNames.size();j++){
-                if(B[i][j]/B[j][j] > r){
+                if(i==j)
+                    continue;
+                if(B[j][j]!=0 && B[i][j]/B[j][j] > r){
                     //合并社区i和社区j
                     String iName = comIndexMapName.get(i);
                     String jName = comIndexMapName.get(j);
@@ -242,5 +246,35 @@ public class ConsensusClustering {
         MyPrint.print("总共 "+comNames.size()+" 个社区");
         MyPrint.print("-*-*-*-*-*-*-*-满足被合并条件的社区有 "+cooccurMap.size()+" 个");
 
+    }
+
+    private static void fixBug(List<String>allNodesList, double[][]B,List<String>comNames,Partition partition){
+        Set<String> nodesSet = new HashSet<String>();
+        nodesSet.addAll(allNodesList);
+        MyPrint.print("判断是否有重名的基因，allNodesList.size = "+allNodesList.size()+" ；nodesSet.size = "+nodesSet.size());
+
+        //理论上来说矩阵B对角线上的值应该是其所在行和列的最大值
+        int n = B[0].length;
+        int num=0;
+        int numCol=0;
+        for (int i=0;i < n;i++){
+            double Bii = B[i][i];
+            for(int j=0;j < n;j++){
+                if(B[i][j] > Bii && Bii > 0){
+                    num++;
+                }
+            }
+        }
+        for(int i=0;i < n;i++){
+            for(int j=0;j < n;j++){
+                if(j==i)
+                    continue;
+                if(B[j][i] > B[i][i]){
+                    numCol++;
+                }
+            }
+        }
+        MyPrint.print("*****------行中大于对角线元素值的有 "+num+" 个");
+        MyPrint.print("*****------列中大于对角线元素值的有 "+numCol+" 个");
     }
 }
