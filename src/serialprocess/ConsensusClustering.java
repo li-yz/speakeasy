@@ -48,7 +48,10 @@ public class ConsensusClustering {
 
             for(int uIndex=0;uIndex <allNodeList.size();uIndex++){
                 String unode=allNodeList.get(uIndex);
-                for(int vIndex=uIndex+1;vIndex <allNodeList.size();vIndex++){
+                for(int vIndex=0;vIndex <allNodeList.size();vIndex++){
+                    if(uIndex == vIndex){//即共生矩阵对角线元素，元素值应该为0
+                        continue;
+                    }
                     String vnode=allNodeList.get(vIndex);
 
                     //if judge whether u and v belongs to the same community
@@ -61,7 +64,7 @@ public class ConsensusClustering {
         }//for 10 partition
 
         //make Co-occur matrix A symmetric
-        a.symmetricMatrix();
+//        a.symmetricMatrix();
 
 
         //calculate the ARI value between the every 2 of 10 partitions
@@ -218,9 +221,9 @@ public class ConsensusClustering {
             //矩阵B对角线元素计算完毕
         }
 
-        //遍历所有社区组合，看是否合并
-        fixBug(allNodesList,B,comNames,bestPartition);
 
+        fixBug(allNodesList,B,comNames,bestPartition);
+        //遍历所有社区组合，看是否合并
         //我们希望看到的是“小社区”被“大社区”合并，即合并的时候移除小社区，将其节点并入大社区
         //有可能出现这样的情况：即一个“小社区”Cj可能会被多个“大社区”所合并，而此处我们并不希望出现重叠情况，
         // 因此在判断计算的过程中，若小社区Cj与其他社区Ci共线的程度超过阈值r，则记录下满足条件的所有社区Ci，最后挑选共线程度最大的Ci，由与Cj共线程度最大的Ci来合并Cj

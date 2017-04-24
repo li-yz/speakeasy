@@ -100,7 +100,10 @@ public class CommunityDetectionEntrance {
 
 			for(int uIndex=0;uIndex <allNodeList.size();uIndex++){
 				String unode=allNodeList.get(uIndex);
-				for(int vIndex=uIndex+1;vIndex <allNodeList.size();vIndex++){
+				for(int vIndex=0;vIndex <allNodeList.size();vIndex++){
+					if(uIndex == vIndex){//即共生矩阵对角线元素，元素值应该为0
+						continue;
+					}
 					String vnode=allNodeList.get(vIndex);
 
 					//if judge whether u and v belongs to the same community
@@ -113,7 +116,7 @@ public class CommunityDetectionEntrance {
 		}//for 10 partition
 
 		//make Co-occur matrix A symmetric
-		a.symmetricMatrix();
+//		a.symmetricMatrix();
 
 
 		//calculate the ARI value between the every 2 of 10 partitions
