@@ -15,7 +15,6 @@ public class ConsensusClustering {
         List<Partition>partitionList = (List<Partition>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\partitionList.obj");
         List<String> allNodeList = (List<String>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\allNodeList.obj");
         Graph g = (Graph)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\graph.obj");
-        MyPrint.print("网络图g中"+g.map.size());
 //        List<String> allNodesOfBigCommunities = (List<String>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\community analysis\\allNodesInMeaningfulCom.obj");//毕业论文4.10改进2，新的输入节点列表
 
         //确定阈值r需要的节点平均权值Wv,c的分布
@@ -108,11 +107,12 @@ public class ConsensusClustering {
         Partition bestPartition = partitionList.get(index);
 
         //将非重叠的 最优划分结果序列化保存
-        MySerialization.serializeObject(bestPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+        MySerialization.serializeObject(bestPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartitionBeforeMerge.obj");
 
         //将合并社区的工作放到前面，做如下改进1,2017.4.13
         mergeCommunities(bestPartition,a,allNodeList);
         //将合并社区的工作放到前面，做以上改进1,2017.4.13
+        MySerialization.serializeObject(bestPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartitionAfterMerge.obj");
 
         bestPartitionCommunities=bestPartition.communities;
         bestPartitionNodeMapCommu=bestPartition.nodeCommunityMap;
@@ -127,7 +127,7 @@ public class ConsensusClustering {
         }
 
         double r=(double)1/maxCommuNum;//论文中作者提到 r可以这么设定，特别是在生物网络中
-        r=0.2;
+//        r=0.1;
 
 //        r = 3*meanOfWvc ;// 阈值r的值是可以适当调整的，r越大 得到的重叠节点就越少,取Wvc的均值
 
@@ -168,7 +168,7 @@ public class ConsensusClustering {
     }
 
     private static void mergeCommunities(Partition bestPartition,CooccurMatrix a,List<String>allNodesList){
-        double r = 0.6d;
+        double r = 0.5d;
         Map<String,List<String>> communities = bestPartition.getCommunities();
         List<String> comNames = new ArrayList<String>();
         comNames.addAll(communities.keySet());
@@ -222,7 +222,7 @@ public class ConsensusClustering {
         }
 
 
-        fixBug(allNodesList,B,comNames,bestPartition);
+//        fixBug(allNodesList,B,comNames,bestPartition);
         //遍历所有社区组合，看是否合并
         //我们希望看到的是“小社区”被“大社区”合并，即合并的时候移除小社区，将其节点并入大社区
         //有可能出现这样的情况：即一个“小社区”Cj可能会被多个“大社区”所合并，而此处我们并不希望出现重叠情况，
@@ -233,7 +233,7 @@ public class ConsensusClustering {
                 if(i==j)
                     continue;
                 if(B[j][j]!=0 && B[i][j]/B[j][j] > r){
-                    //合并社区i和社区j
+                    //满足条件：社区j被社区i合并，记录下来，最后选择由B[i][j]/B[j][j] 的值最大的社区i来合并社区j
                     String iName = comIndexMapName.get(i);
                     String jName = comIndexMapName.get(j);
                     if(!cooccurMap.containsKey(jName)) {
@@ -248,7 +248,31 @@ public class ConsensusClustering {
         }
         MyPrint.print("总共 "+comNames.size()+" 个社区");
         MyPrint.print("-*-*-*-*-*-*-*-满足被合并条件的社区有 "+cooccurMap.size()+" 个");
-
+        //选择由B[i][j]/B[j][j] 的值最大的社区i来合并社区j
+        MyPrint.print("开始合并社区，合并前共有 "+bestPartition.getCommunities().size()+" 个社区");
+        Set<String> alreadyRemovedCommuNames = new HashSet<String>();
+        List<String>beMergedCommuNames = new ArrayList<String>();
+        beMergedCommuNames.addAll(cooccurMap.keySet());
+        for(int j=0;j < beMergedCommuNames.size();j++){
+            String jName = beMergedCommuNames.get(j);
+            String maxCommuName = "";
+            double max = -100d;
+            for(String e:cooccurMap.get(jName).keySet()){
+                if(cooccurMap.get(jName).get(e) > max){
+                    if(!alreadyRemovedCommuNames.contains(e)) {//即当社区e尚未被其他社区合并时，才记录它
+                        maxCommuName = e;
+                        max = cooccurMap.get(jName).get(e);
+                    }
+                }
+            }
+            //由maxCommuName来合并社区jName
+            MyPrint.print("&&&&&&&&&&="+bestPartition.getCommunities().containsKey(maxCommuName));
+            MyPrint.print("由社区 "+maxCommuName+" 来合并社区"+jName+";社区"+maxCommuName+"大小="+bestPartition.getCommunities().get(maxCommuName).size()+",社区"+jName+"大小="+bestPartition.getCommunities().get(jName).size());
+            bestPartition.getCommunities().get(maxCommuName).addAll(bestPartition.getCommunities().get(jName));
+            bestPartition.getCommunities().remove(jName);
+            alreadyRemovedCommuNames.add(jName);
+        }
+        MyPrint.print("结束合并社区，合并后共有 "+bestPartition.getCommunities().size()+" 个社区");
     }
 
     private static void fixBug(List<String>allNodesList, double[][]B,List<String>comNames,Partition partition){

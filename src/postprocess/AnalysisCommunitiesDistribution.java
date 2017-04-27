@@ -17,7 +17,7 @@ public class AnalysisCommunitiesDistribution {
     public static void main(String[] args){
         //反序列化之前保存的网络图G、最优非重叠划分、重叠划分结果
 //        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
-        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartition.obj");
+        Partition bestNonOverlapPartition = (Partition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\bestNonOverlapPartitionAfterMerge.obj");
         OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
         MyPrint.print("非重叠社区个数： "+bestNonOverlapPartition.getCommunities().size());
