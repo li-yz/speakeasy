@@ -2,11 +2,9 @@ package serialprocess;
 
 import utils.MyOutPut;
 import utils.MyPrint;
+import utils.MySerialization;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DetermineOverlapNodes {
 
@@ -22,6 +20,9 @@ public class DetermineOverlapNodes {
 		//determine the overlapping nodes
 
 		StringBuffer sb = new StringBuffer();
+
+		//保存最优划分中每个“社区”与G的全部节点共线次数，并序列化，只执行一次，调整不同阈值的时候可以直接拿出来用，空间换时间
+		Map<String,Double> fenmuMap = new HashMap<String, Double>();
 
 		for(int i=0;i < allNodeList.size();i++){
 			Iterator finIter=bestPartitionCommunities.entrySet().iterator();
@@ -49,15 +50,24 @@ public class DetermineOverlapNodes {
 					}
 					double fenmu = 0.0d;//
 					for(String kNode :allNodeList){
-						for(String uNode :nodeInCList){
-							if(a.matrix.containsKey(uNode) && a.matrix.get(uNode).containsKey(kNode)){
-								fenmu+=a.matrix.get(uNode).get(kNode);
-							}
-						}
-//						if(a.matrix.containsKey(vnodeName) && a.matrix.get(vnodeName).containsKey(kNode)){
-//							fenmu+=a.matrix.get(vnodeName).get(kNode);
+						//①4.13改进2的原始公式
+//						for(String uNode :nodeInCList){
+//							if(a.matrix.containsKey(uNode) && a.matrix.get(uNode).containsKey(kNode)){
+//								fenmu+=a.matrix.get(uNode).get(kNode);
+//							}
 //						}
+						//①4.13改进2的原始公式
+
+						//②我自己的改动，改进2公式的分母
+						if(a.matrix.containsKey(vnodeName) && a.matrix.get(vnodeName).containsKey(kNode)){
+							fenmu+=a.matrix.get(vnodeName).get(kNode);
+						}//②我自己的改动，改进2公式的分母
 					}
+					//若采用①，则在第一次执行的时候保存 每个社区commuName与G中全部节点共线的次数
+//					fenmuMap.put(commuName,fenmu);
+
+//					fenmu=fenmuMap.get(commuName);
+
 					fenmu = fenmu*10;
 					if(fenzi/fenmu > r){//即节点v同时属于社区commuName
 						if(nodeMapCommunities.containsKey(vnodeName)){
@@ -81,6 +91,7 @@ public class DetermineOverlapNodes {
 				}
 		}//
 	}//for
+//		MySerialization.serializeObject(fenmuMap,"D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\eachCommunityAndOtherAllNodesCooccurMap.obj");//配合改进2用，第一次执行时序列化一次即可
 
 		//把多社区节点原来所属的社区名字也添加到nodeMapCommunities中，因为上面得到的nodeMapCommunities中，节点名是key，其value中只存入了节点原来不属于的社区名
 		Iterator iter=nodeMapCommunities.entrySet().iterator();

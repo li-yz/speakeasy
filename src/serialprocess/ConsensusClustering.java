@@ -127,7 +127,7 @@ public class ConsensusClustering {
         }
 
         double r=(double)1/maxCommuNum;//论文中作者提到 r可以这么设定，特别是在生物网络中
-//        r=0.1;
+        r=0.09;
 
 //        r = 3*meanOfWvc ;// 阈值r的值是可以适当调整的，r越大 得到的重叠节点就越少,取Wvc的均值
 
@@ -268,6 +268,10 @@ public class ConsensusClustering {
             //由maxCommuName来合并社区jName
             MyPrint.print("&&&&&&&&&&="+bestPartition.getCommunities().containsKey(maxCommuName));
             MyPrint.print("由社区 "+maxCommuName+" 来合并社区"+jName+";社区"+maxCommuName+"大小="+bestPartition.getCommunities().get(maxCommuName).size()+",社区"+jName+"大小="+bestPartition.getCommunities().get(jName).size());
+            List<String> nodesInBeMergedCommunity = bestPartition.getCommunities().get(jName);
+            for(String e :nodesInBeMergedCommunity){
+                bestPartition.getNodeCommunityMap().put(e,maxCommuName);
+            }
             bestPartition.getCommunities().get(maxCommuName).addAll(bestPartition.getCommunities().get(jName));
             bestPartition.getCommunities().remove(jName);
             alreadyRemovedCommuNames.add(jName);

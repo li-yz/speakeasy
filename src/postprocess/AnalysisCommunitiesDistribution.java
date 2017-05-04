@@ -23,13 +23,11 @@ public class AnalysisCommunitiesDistribution {
         MyPrint.print("非重叠社区个数： "+bestNonOverlapPartition.getCommunities().size());
         MyPrint.print("重叠社区个数： "+overlapPartition.getCommunities().size());
 
-        Iterator iterator = overlapPartition.getCommunities().entrySet().iterator();
-        int sum = 0;
-        while(iterator.hasNext()){
-            Map.Entry<String,List<String>> entry = (Map.Entry<String,List<String>>)iterator.next();
-            sum+=entry.getValue().size();
-        }
-        MyPrint.print("重叠社区平均社区大小="+(double)sum/overlapPartition.getCommunities().size());
+//        MyPrint.print("----------------------");//查看重叠节点
+//        for(String e :overlapPartition.getNodeMapCommunities().keySet()){
+//            MyPrint.print(e);
+//        }
+//        MyPrint.print("----------------------");
 
         compare1(bestNonOverlapPartition,overlapPartition);
 
@@ -69,7 +67,7 @@ public class AnalysisCommunitiesDistribution {
                 MyPrint.print("社区标志"+commuName+" 的社区 吸入重叠节点："+(overlapCommu.size()-nonOverlapCommu.size())+"个");
                 MyPrint.print("社区标志"+commuName+"非重叠时大小="+nonOverlapCommu.size()+"; 重叠下大小="+overlapCommu.size());
                 MyPrint.print("---------------------------------------");
-                if( overlapCommu.size() >= 10){//若吸入节点之前 commuName的社区大小 > 5，吸入节点之后名为commuName的重叠社区大小 > 7，则认为该commuName对应的社区是有意义的
+                if( overlapCommu.size() >= 10){
                     meaningfullOverlapCommuNames.add(commuName);
                 }
 
@@ -82,6 +80,9 @@ public class AnalysisCommunitiesDistribution {
                     //遍历节点node所属的多个社区，筛选出不属于当前社区commuName的 社区大小 > 7的社区
                     for(String tag: commuTags){
                         if(!tag.equals(commuName)){//即该tag的社区不是当前社区，
+                            if(bestNonOverlapPartition.getCommunities().get(tag) == null){
+                                MyPrint.print("");
+                            }
                             if(bestNonOverlapPartition.getCommunities().get(tag).size() >= 10) {//且大小 > 7，该社区是有意义的重叠社区之一
                                 meaningfullOverlapCommuNames.add(tag);
                             }
@@ -110,7 +111,7 @@ public class AnalysisCommunitiesDistribution {
         MyPrint.print("总的重叠社区个数 = "+totalOverlapTagSet.size()+"；其中 "+meaningfullOverlapCommuNames.size()+"个有意义");
 
         //判断有意义的重叠社区中，有没有小社区完全被大社区所包含的情况，若有，则小社区应该被删除
-        mergeOverlapCommunities(overlapPartition, meaningfullOverlapCommuNames);
+//        mergeOverlapCommunities(overlapPartition, meaningfullOverlapCommuNames);
 
         MyPrint.print("有意义的重叠社区，社区名如下--------------------------");
         for(String e :meaningfullOverlapCommuNames){
