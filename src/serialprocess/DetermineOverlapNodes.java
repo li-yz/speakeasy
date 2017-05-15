@@ -68,7 +68,8 @@ public class DetermineOverlapNodes {
 
 //					fenmu=fenmuMap.get(commuName);
 
-					fenmu = fenmu*10;
+
+//					fenmu = fenmu*10;//若是用②我改进，则不需要1/N了
 					if(fenzi/fenmu > r){//即节点v同时属于社区commuName
 						if(nodeMapCommunities.containsKey(vnodeName)){
 							List<String> strInCom=nodeMapCommunities.get(vnodeName);
