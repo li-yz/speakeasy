@@ -73,7 +73,7 @@ public class SpeakEasy {
 	 * @param v
 	 */
 	public void determineAndAlterLabel(Graph g,VertexNode v){
-		double maxSpecity=0.0d;
+		double maxSpecity=-10000d;
 		String specifyLabel="";
 		int bufferSize=g.bufferSize;
 		Map<String, Double>actualLabel=new HashMap<String, Double>();
