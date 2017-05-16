@@ -76,8 +76,8 @@ public class Graph implements Serializable{
 				System.out.println("开始读取文件 ：");
 				while((readrow=bf.readLine()) != null){
 					
-					String []str=readrow.split("\t");
-//					String []str=readrow.split(" ");
+//					String []str=readrow.split("\t");
+					String []str=readrow.split(" ");
 					VertexNode from=new VertexNode(str[0]);
 					VertexNode to=new VertexNode(str[1]);
 					double weight = 0.0d;
@@ -146,22 +146,27 @@ public class Graph implements Serializable{
 					String []str=readrow.split("\t");
 					VertexNode from=new VertexNode(str[0]);
 					VertexNode to=new VertexNode(str[1]);
-					double weight = Double.parseDouble(str[2]);
-						Edges newEdge=new Edges(from, to,weight);
-						//把读取到的这条边添加到图的边集合中
-						edgelist.add(newEdge);
-						
-						//每读取一条边只把from节点对应的节点保存到map中即可，同时过滤重复的节点名
-						if(!map.containsKey(str[0])){
+					double weight = 0.0d;
+					if(str.length <= 2){
+						weight = 1;
+					}else {
+						weight = Double.parseDouble(str[2]);
+					}
+					Edges newEdge=new Edges(from, to,weight);
+					//把读取到的这条边添加到图的边集合中
+					edgelist.add(newEdge);
+
+					//每读取一条边只把from节点对应的节点保存到map中即可，同时过滤重复的节点名
+					if(!map.containsKey(str[0])){
 //							from.neighborList.add(str[1]);
-							from.neighborList.put(str[1],weight);
-							map.put(str[0], from);
-						}else{
-							from=map.get(str[0]);
+						from.neighborList.put(str[1],weight);
+						map.put(str[0], from);
+					}else{
+						from=map.get(str[0]);
 //							from.neighborList.add(str[1]);
-							from.neighborList.put(str[1],weight);
-							map.put(str[0], from);
-						}
+						from.neighborList.put(str[1],weight);
+						map.put(str[0], from);
+					}
 						
 				}
 				System.out.println("读取完毕：有边相连的节点"+map.size()+"图的总边数"+edgelist.size());
