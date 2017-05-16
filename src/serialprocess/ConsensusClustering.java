@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public class ConsensusClustering {
     public static void main(String[] args){
-        List<Partition>partitionList = (List<Partition>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\partitionList.obj");
-        List<String> allNodeList = (List<String>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\allNodeList.obj");
+        List<Partition>partitionList = (List<Partition>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\partitionList\\partitionList.obj");
+        List<String> allNodeList = (List<String>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\allNodeList\\allNodeList.obj");
         List<String> allNodesOfBigCommunities = (List<String>)MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\community analysis\\allNodesInMeaningfulCom.obj");//毕业论文4.10改进2，新的输入节点列表
 
         //确定阈值r需要的节点平均权值Wv,c的分布
@@ -49,7 +49,10 @@ public class ConsensusClustering {
 
             for(int uIndex=0;uIndex <allNodeList.size();uIndex++){
                 String unode=allNodeList.get(uIndex);
-                for(int vIndex=uIndex+1;vIndex <allNodeList.size();vIndex++){
+                for(int vIndex=0;vIndex <allNodeList.size();vIndex++){
+                    if(uIndex == vIndex){//即共生矩阵对角线元素，元素值应该为0
+                        continue;
+                    }
                     String vnode=allNodeList.get(vIndex);
 
                     //if judge whether u and v belongs to the same community
@@ -62,7 +65,7 @@ public class ConsensusClustering {
         }//for 10 partition
 
         //make Co-occur matrix A symmetric
-        a.symmetricMatrix();
+//        a.symmetricMatrix();
 
 
         //calculate the ARI value between the every 2 of 10 partitions
@@ -121,7 +124,7 @@ public class ConsensusClustering {
         }
 
         double r=(double)1/maxCommuNum;//论文中作者提到 r可以这么设定，特别是在生物网络中
-        r=0.2;
+        r=0.1;
 
 //        r = 3*meanOfWvc ;// 阈值r的值是可以适当调整的，r越大 得到的重叠节点就越少,取Wvc的均值
 
