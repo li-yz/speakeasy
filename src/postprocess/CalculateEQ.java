@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class CalculateEQ {
     public static void main(String[] args){
-        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\graph.obj");
+        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
         OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
 //        double eq = getEQ(g,overlapPartition);
