@@ -10,18 +10,19 @@ import java.util.*;
 public class CommunityDetectionEntrance {
 	
 	public static void main(String[] args){
-		MySerialization mySerialization = new MySerialization();//序列化工具对象
-
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String startDate = sdf.format(date);
 
 		int whetherRepeat = 0;//网络图中的表示方式，是否有重复边,0：无重复边，1：有重复边 ！！！！！！！！！
-//		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\network.dat";//LFR benchMark网络
-//		String networkPath = "D:\\paperdata\\test network\\karate\\network source-target.txt";//karate 空手道俱乐部数据集
-		String networkPath ="D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfSimilarityP2.7N3.5.txt";
-//		String networkPath = "D:\\paperdata\\test network\\pol.books\\pol.books.txt";
-//		String networkPath = "D:\\paperdata\\test network\\dolphin\\dolphin.txt";
+//		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\network.dat";//LFR benchMark网络，有重复边
+//		String networkPath = "D:\\paperdata\\test network\\karate\\network source-target.txt";//karate 空手道俱乐部数据集,无重复边
+//		String networkPath ="D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfSimilarityP2.7N3.5.txt";
+//		String networkPath = "D:\\paperdata\\test network\\pol.books\\pol.books.txt";//无重复边
+//		String networkPath = "D:\\paperdata\\test network\\dolphin\\dolphin.txt";//无重复边
+
+//		String networkPath = "D:\\paperdata\\test network\\Collaboration network of Arxiv General Relativity category\\CA-GrQc.txt";//Collaboration network of Arxiv General Relativity category网络，有重复边的表示
+		String networkPath = "D:\\paperdata\\test network\\netscience-network\\netscience.csv";//netscience网络图，带权，无重复边表示
 		Graph g = new Graph(5,networkPath,whetherRepeat);
 
 		//序列化网络图g，主要目的是保存网络图结构，方便后续计算模块度用
@@ -176,7 +177,7 @@ public class CommunityDetectionEntrance {
 
 		double r=(double)1/maxCommuNum;//论文中作者提到 r可以这么设定，特别是在生物网络中
 
-		r = 0.3;//阈值r的值是可以适当调整的，r越大 得到的重叠节点就越少,取Wvc的均值
+		r = 0.2;//阈值r的值是可以适当调整的，r越大 得到的重叠节点就越少,取Wvc的均值
 
 		MyPrint.print("筛选重叠社区节点的阈值r = "+r);
 
