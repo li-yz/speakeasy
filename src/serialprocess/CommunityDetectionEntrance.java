@@ -16,10 +16,10 @@ public class CommunityDetectionEntrance {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String startDate = sdf.format(date);
 
-		int whetherRepeat = 0;//网络图中的表示方式，是否有重复边,0：无重复边，1：有重复边 ！！！！！！！！！
-//		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\network.dat";//LFR benchMark网络
+		int whetherRepeat = 1;//网络图中的表示方式，是否有重复边,0：无重复边，1：有重复边 ！！！！！！！！！
+		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\network.dat";//LFR benchMark网络
 //		String networkPath = "D:\\paperdata\\test network\\karate\\network source-target.txt";//karate 空手道俱乐部数据集
-		String networkPath ="D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfSimilarityP2.7N3.5.txt";
+//		String networkPath ="D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfSimilarityP2.7N3.5.txt";
 //		String networkPath = "D:\\paperdata\\test network\\pol.books\\pol.books.txt";
 //		String networkPath = "D:\\paperdata\\test network\\dolphin\\dolphin.txt";
 		Graph g = new Graph(5,networkPath,whetherRepeat);
@@ -100,7 +100,10 @@ public class CommunityDetectionEntrance {
 
 			for(int uIndex=0;uIndex <allNodeList.size();uIndex++){
 				String unode=allNodeList.get(uIndex);
-				for(int vIndex=uIndex+1;vIndex <allNodeList.size();vIndex++){
+				for(int vIndex=0;vIndex <allNodeList.size();vIndex++){
+					if(uIndex == vIndex){//即共生矩阵对角线元素，元素值应该为0
+						continue;
+					}
 					String vnode=allNodeList.get(vIndex);
 
 					//if judge whether u and v belongs to the same community
@@ -113,7 +116,7 @@ public class CommunityDetectionEntrance {
 		}//for 10 partition
 
 		//make Co-occur matrix A symmetric
-		a.symmetricMatrix();
+//		a.symmetricMatrix();
 
 
 		//calculate the ARI value between the every 2 of 10 partitions
@@ -173,7 +176,7 @@ public class CommunityDetectionEntrance {
 
 		double r=(double)1/maxCommuNum;//论文中作者提到 r可以这么设定，特别是在生物网络中
 
-		r = 0.3;//阈值r的值是可以适当调整的，r越大 得到的重叠节点就越少,取Wvc的均值
+		r = 0.1;//阈值r的值是可以适当调整的，r越大 得到的重叠节点就越少,取Wvc的均值
 
 		MyPrint.print("筛选重叠社区节点的阈值r = "+r);
 
