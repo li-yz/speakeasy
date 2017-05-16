@@ -109,7 +109,7 @@ public class AnalysisCommunitiesDistribution {
         MyPrint.print("-----------------------------");
         MyPrint.print("总的重叠社区个数 = "+totalOverlapTagSet.size()+"；其中 "+meaningfullOverlapCommuNames.size()+"个有意义");
 
-        //判断有意义的重叠社区中，有没有小社区完全被大社区所包含的情况，若有，则小社区应该被删除
+        //即4.10改进3，合并社区。。。。判断有意义的重叠社区中，有没有2个重叠社区重叠部分超过阈值α，若有则合并这2个社区;
         mergeOverlapCommunities(overlapPartition, meaningfullOverlapCommuNames);
 
         MyPrint.print("有意义的重叠社区，社区名如下--------------------------");
