@@ -41,7 +41,7 @@ public class LFRTest {
         OverlapPartition GANXiSwPartition = AnalysisGANXiSwResult.readOverlapPartition(GANXisWCommunitiesPath,GANXiSwOverlapNodesPath);
         double nmi2 = NMI.getNMIValue(GANXiSwPartition,truthPartition,n);
         MyPrint.print("GANXiSw结果与真实结果的nmi值 = "+nmi2);
-        compareSpeakEasyResultWithTheTruthOfLFRNetwork(truthPartition,GANXiSwPartition);
+//        compareSpeakEasyResultWithTheTruthOfLFRNetwork(truthPartition,GANXiSwPartition);
     }
 
     /**
@@ -124,7 +124,7 @@ public class LFRTest {
         }
         MyPrint.print("真实的重叠节点个数 = "+truthOverlapNodes.size());
         MyPrint.print("speakeasy得到的重叠节点个数 = "+speakeasyOverlapNodes.size());
-        MyPrint.print("speakeasy算法覆盖到的真实重叠节点个数 = "+rnum +" ,覆盖率 = "+(double)17/20);
+        MyPrint.print("speakeasy算法覆盖到的真实重叠节点个数 = "+rnum +" ,覆盖率 = "+(double)rnum/truthOverlapNodes.size());
         MyPrint.print("speakeasy找到的非真实的重叠节点个数 = "+(speakeasyOverlapNodes.size()-rnum));
         //重叠节点比较 完
 
