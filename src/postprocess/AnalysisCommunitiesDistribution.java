@@ -146,9 +146,38 @@ public class AnalysisCommunitiesDistribution {
                 }
             }
         }
-        MyPrint.print("有"+removeList.size()+"个社区被完全包含！！！！！！把被包含的小社区应该被移除");
+        //先移除被完全包含的社区
+        for(String rc :removeList){
+            List<String> nodesInRemoveCommunity = overlapPartition.getCommunities().get(rc);
+            //移除nodeMapCommunities中社区rc的信息
+            for(String node :nodesInRemoveCommunity){
+                if(overlapPartition.getNodeMapCommunities().containsKey(node)){
+                    overlapPartition.getNodeMapCommunities().get(node).remove(rc);
+                }
+            }
+
+            //再移除communities中的社区rc
+            if(overlapPartition.getCommunities().containsKey(rc)) {
+                overlapPartition.getCommunities().remove(rc);
+            }
+            meaningfullOverlapCommuNames.remove(rc);
+        }
+
+        MyPrint.print("有"+removeList.size()+"个社区被完全包含！！！！！！把被完全包含的小社区移除");
+        for(String rc :removeList){
+            if(list1.contains(rc)){
+                list1.remove(rc);
+            }
+        }
+        removeList.clear();
         for(int m=0;m < list1.size();m++){
+            if(removeList.contains(list1.get(m))){
+                continue;
+            }
             for(int n=m+1;n < list1.size();n++){
+                if(removeList.contains(list1.get(n))){
+                    continue;
+                }
                 String mName = list1.get(m);
                 String nName = list1.get(n);
                 Set<String>mSet = new HashSet<String>();
@@ -167,15 +196,37 @@ public class AnalysisCommunitiesDistribution {
                     List<String> mergeList = new ArrayList<String>();
                     mergeList.addAll(mergeSet);
                     overlapPartition.getCommunities().put(nName,mergeList);
+
+                    //处理特殊情况：社区mName的节点中不是与nName重叠的节点，这些节点的nodeMapCommunities中不包括nName，由社区nName合并这些节点以后，这些节点的nodeMapCommunities中应该包含nName
+                    for(String node :mergeList){
+                        if(overlapPartition.getNodeMapCommunities().containsKey(node) && !overlapPartition.getNodeMapCommunities().get(node).contains(nName)){
+                            overlapPartition.getNodeMapCommunities().get(node).add(nName);
+                        }
+                    }
                 }
 
             }
         }
         MyPrint.print("有"+removeList.size()+"个社区交集部分超过0.5，应该合并两个社区");
-        for(String e:removeList){
-            meaningfullOverlapCommuNames.remove(e);
+        for(String rc:removeList){
+            List<String> nodesInRemoveCommunity = overlapPartition.getCommunities().get(rc);
+            //移除nodeMapCommunities中社区rc的信息
+            for(String node :nodesInRemoveCommunity){
+                if(overlapPartition.getNodeMapCommunities().containsKey(node)){
+                    overlapPartition.getNodeMapCommunities().get(node).remove(rc);
+                }
+            }
+
+            //再移除communities中的社区rc
+            if(overlapPartition.getCommunities().containsKey(rc)) {
+                overlapPartition.getCommunities().remove(rc);
+            }
+            meaningfullOverlapCommuNames.remove(rc);
         }
         MyPrint.print("移除"+removeList.size()+"个小社区后，还有"+meaningfullOverlapCommuNames.size()+"个有意义的重叠社区");
+
+        //序列化保存经过合并后的重叠社区overlapPartition对象，便于计算EQ值
+        MySerialization.serializeObject(overlapPartition,"D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartitionAfterMerge.obj");
     }
 
     public static void findAllNodesOfMeaningfulCom(OverlapPartition overlapPartition,Set<String>meaningfulSeparateCommuNames,Set<String>meaningfullOverlapCommuNames){

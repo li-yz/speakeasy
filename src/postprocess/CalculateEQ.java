@@ -15,8 +15,9 @@ import java.util.*;
  */
 public class CalculateEQ {
     public static void main(String[] args){
-        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\original graph structure\\graph.obj");
+        Graph g = (Graph) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\历史计算结果\\2017.3.9网络图G2\\graph.obj");
         OverlapPartition overlapPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
+        OverlapPartition overlapPartitionAfterMerge = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartitionAfterMerge.obj");
 
 //        double eq = getEQ(g,overlapPartition);
 //        MyPrint.print("冯论文版EQ = "+eq);
@@ -148,9 +149,15 @@ public class CalculateEQ {
                     int oj=1;
                     if(overlapPartition.getNodeMapCommunities().containsKey(nodei.vertexName)){
                         oi = overlapPartition.getNodeMapCommunities().get(nodei.vertexName).size();
+                        if(oi == 0){
+                            MyPrint.print("****非法值****");
+                        }
                     }
                     if(overlapPartition.getNodeMapCommunities().containsKey(nodej.vertexName)){
                         oj = overlapPartition.getNodeMapCommunities().get(nodej.vertexName).size();
+                        if(oj == 0){
+                            MyPrint.print("****非法值****");
+                        }
                     }
 
                     double temp = ((double)1/(oi*oj))*(Aij - (double)(Ki*Kj)/(2*m));
