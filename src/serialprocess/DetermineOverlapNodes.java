@@ -53,7 +53,7 @@ public class DetermineOverlapNodes {
 						max = nodeInCList.size();
 					}
 					//4.10毕业论文中算法改进1部分
-//					max = nodeInCList.size();//改进前
+					max = nodeInCList.size();//改进前
 
 					temp2=(double)temp1/(max*10);
 
