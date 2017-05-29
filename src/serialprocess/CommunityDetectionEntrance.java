@@ -14,15 +14,16 @@ public class CommunityDetectionEntrance {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String startDate = sdf.format(date);
 
-		int whetherRepeat = 0;//网络图中的表示方式，是否有重复边,0：无重复边，1：有重复边 ！！！！！！！！！
-//		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\network.dat";//LFR benchMark网络，有重复边
-//		String networkPath = "D:\\paperdata\\test network\\karate\\network source-target.txt";//karate 空手道俱乐部数据集,无重复边
-//		String networkPath ="D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfSimilarityP2.7N3.5.txt";
+		int whetherRepeat = 1;//网络图中的表示方式，是否有重复边,0：无重复边，1：有重复边 ！！！！！！！！！   另外需要注意，在计算EQ的时候也需要处理有/无重复边的情况
+//		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\network.dat";//LFR benchMark网络 1000个节点，有重复边
+		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\2017.5.29-new lfr network\\network.dat";//LFR benchMark网络 4000个节点，100个重叠节点，有重复边
+//		String networkPath = "D:\\paperdata\\test network\\karate\\network source-target.txt";//karate 空手道俱乐部数据集 ，无重复边
+//		String networkPath ="D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfSimilarityP2.7N3.5.txt";//无重复边
 //		String networkPath = "D:\\paperdata\\test network\\pol.books\\pol.books.txt";//无重复边
 //		String networkPath = "D:\\paperdata\\test network\\dolphin\\dolphin.txt";//无重复边
 
 //		String networkPath = "D:\\paperdata\\test network\\Collaboration network of Arxiv General Relativity category\\CA-GrQc.txt";//Collaboration network of Arxiv General Relativity category网络，有重复边的表示
-		String networkPath = "D:\\paperdata\\test network\\netscience-network\\netscience.csv";//netscience网络图，带权，无重复边表示
+//		String networkPath = "D:\\paperdata\\test network\\netscience-network\\netscience.csv";//netscience网络图，带权，无重复边表示
 		Graph g = new Graph(5,networkPath,whetherRepeat);
 
 		//序列化网络图g，主要目的是保存网络图结构，方便后续计算模块度用

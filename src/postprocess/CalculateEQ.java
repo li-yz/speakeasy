@@ -122,7 +122,7 @@ public class CalculateEQ {
         double q = 0.0d;
         int m = g.totalEdgesList.size();//网络图g中的总边数 注意！！！注意！！！注意！！！注意！！！注意！！！注意！！！若是无向图原始网络图数据文件中 同一条边表示了两次，则要把 m 除以二才是真实的边数
 //        如果(原始网络图文件中 同一条无向边被表示了2次)，m要除以二
-//        m=m/2;
+        m=m/2;
         int n=0;//n表示节点总数
 
         Map<String, List<String>> nodeMapCommunities = overlapPartition.getNodeMapCommunities();
