@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class LFRTest {
     public static void main(String[] args){
-        String realCommunityPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\2017.5.29-new lfr network\\community.dat";
+        String realCommunityPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\2017.6.1\\community.dat";
         OverlapPartition truthPartition = readAndOutPutRealCommunityFromTextFile(realCommunityPath);
         OverlapPartition speakEasyPartition = (OverlapPartition) MySerialization.antiSerializeObject("D:\\paperdata\\soybean\\community detection\\最终结果\\overlapPartition.obj");
 
