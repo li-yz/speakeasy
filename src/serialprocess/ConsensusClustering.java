@@ -126,7 +126,7 @@ public class ConsensusClustering {
         }
 
         double r=(double)1/maxCommuNum;//论文中作者提到 r可以这么设定，特别是在生物网络中
-        r=0.5;
+        r=0.4;
 
 //        r = 3*meanOfWvc ;// 阈值r的值是可以适当调整的，r越大 得到的重叠节点就越少,取Wvc的均值
 
