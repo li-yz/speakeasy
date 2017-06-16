@@ -23,6 +23,9 @@ public class CalculateModularity {
     public static double calculateModularity(Graph g, Partition partition){
         double q = 0.0d;
         int m = g.totalEdgesList.size();//网络图g中的总边数
+        //        如果(原始网络图文件中 同一条无向边被表示了2次)，m要除以二
+        //m=m/2;
+
         int n=0;//n表示节点总数
 
         //保存所有节点，便于循环遍历所有节点
