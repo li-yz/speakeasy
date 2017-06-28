@@ -20,8 +20,8 @@ public class CommunityDetectionEntrance {
 //		String networkPath = "D:\\paperdata\\test network\\使用lfr生成的网络数据\\2017.6.1\\network.dat";//LFR benchMark网络 4000个节点，200个重叠节点，有重复边
 //		String networkPath = "D:\\paperdata\\test network\\karate\\network source-target.txt";//karate 空手道俱乐部数据集 ，无重复边
 //		String networkPath ="D:\\paperdata\\soybean\\community detection\\input network\\genesNetworkOfSimilarityP2.7N3.5.txt";//无重复边
-//		String networkPath = "D:\\paperdata\\test network\\pol.books\\pol.books.txt";//无重复边
-		String networkPath = "D:\\paperdata\\test network\\dolphin\\dolphin.txt";//无重复边
+		String networkPath = "D:\\paperdata\\test network\\pol.books\\pol.books.txt";//无重复边
+//		String networkPath = "D:\\paperdata\\test network\\dolphin\\dolphin.txt";//无重复边
 
 //		String networkPath = "D:\\paperdata\\test network\\Collaboration network of Arxiv General Relativity category\\CA-GrQc.txt";//Collaboration network of Arxiv General Relativity category网络，有重复边的表示
 //		String networkPath = "D:\\paperdata\\test network\\netscience-network\\netscience.csv";//netscience网络图，带权，无重复边表示
